@@ -20,7 +20,7 @@ pageextension 50101 "ResourceListExt" extends "Resource List" //OriginalId
             {
                 Caption = 'Maximum Participants';
                 Visible = ShowMaxParticipants;
-                Tooltip = 'Maximum participants for the resource';
+                Tooltip = 'Maximum participants for the resource.';
                 ApplicationArea = All;
             }
         }
@@ -30,19 +30,13 @@ pageextension 50101 "ResourceListExt" extends "Resource List" //OriginalId
         }
     }
 
-    actions
-    {
-    }
-
     var
         ShowType: Boolean;
         ShowMaxParticipants: Boolean;
 
-    trigger OnOpenPage()
+    trigger OnAfterGetRecord()
     begin
-        //Rec.FilterGroup(3);
         ShowType := Rec.GetFilter(Type) = '';
-        ShowMaxParticipants := Rec.GetFilter(Type) = Format(rec.type::machine);
-        //rec.FilterGroup(0);
+        ShowMaxParticipants := rec.GetFilter(Type) = Format(rec.type::machine)
     end;
 }

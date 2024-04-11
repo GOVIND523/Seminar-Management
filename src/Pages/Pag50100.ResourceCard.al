@@ -17,7 +17,7 @@ pageextension 50100 "ResourceCardExt" extends "Resource Card" //OriginalId
                 ApplicationArea = all;
             }
         }
-        addlast(Invoicing)
+        addafter("Personal Data")
         {
             group(Room)
             {
