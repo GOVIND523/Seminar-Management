@@ -18,7 +18,7 @@ page 50104 "Seminar card"
                     ToolTip = 'Specifies the value of the No. field.';
                     trigger OnAssistEdit()
                     begin
-                        if rec.AssistEdit then
+                        if rec.AssistEdit(xRec) then
                             CurrPage.Update();
                     end;
                 }

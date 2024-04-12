@@ -4,6 +4,7 @@ page 50103 "Seminar Setup"
     Caption = 'Seminar Setup';
     PageType = Card;
     SourceTable = "Seminar Setup";
+    UsageCategory = Administration;
 
     layout
     {

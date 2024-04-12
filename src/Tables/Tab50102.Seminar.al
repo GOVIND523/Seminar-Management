@@ -2,6 +2,7 @@ table 50102 Seminar
 {
     Caption = 'Seminar';
     LookupPageId = "Seminar List";
+    DataCaptionFields = "No.", Name;
 
     fields
     {
@@ -120,6 +121,7 @@ table 50102 Seminar
         NoSeries: Codeunit "No. Series";
 
 
+
     trigger OnInsert()
     begin
         if rec."No." = '' then begin
@@ -149,15 +151,29 @@ table 50102 Seminar
 
 
     // needs adjustments
-    procedure AssistEdit(): Boolean
+    procedure AssistEdit(OldSeminar: Record Seminar) Result: Boolean
     begin
+        SeminarRec := Rec;
         SeminarSetupRec.Get();
         SeminarSetupRec.TestField("Seminar Nos.");
-        if NoSeries.LookupRelatedNoSeries(xRec."No. Series", "No. Series") then begin
-            NoSeries.GetNextNo("No.");
+        if NoSeries.LookupRelatedNoSeries(SeminarSetupRec."Seminar Nos.", OldSeminar."No. Series", SeminarRec."No. Series") then begin
+            SeminarRec."No." := NoSeries.GetNextNo(SeminarRec."No. Series");
             Rec := SeminarRec;
             exit(true);
         end;
     end;
+
+
+
+
+    // Res := Rec;
+    // ResSetup.Get();
+    // ResSetup.TestField("Resource Nos.");
+    // if NoSeries.LookupRelatedNoSeries(ResSetup."Resource Nos.", OldRes."No. Series", Res."No. Series") then begin
+    //     Res."No." := NoSeries.GetNextNo(Res."No. Series");
+    //     Rec := Res;
+    //     exit(true);
+    // end;
+
 
 }
