@@ -2,7 +2,7 @@ table 50105 Seminarcharge
 {
     Caption = 'Seminar Charge';
     DataClassification = CustomerContent;
-    //LookupPageId = SeminarCharges;
+    LookupPageId = SeminarCharges;
 
     fields
     {
@@ -19,54 +19,54 @@ table 50105 Seminarcharge
             DataClassification = CustomerContent;
         }
 
-        // field(3; Type; Enum SeminarChargeType)
-        // {
-        //     Caption = 'Type';
-        //     DataClassification = CustomerContent;
+        field(3; Type; Enum SeminarChargeType)
+        {
+            Caption = 'Type';
+            DataClassification = CustomerContent;
 
-        //     trigger OnValidate()
-        //     begin
-        //         if Type = xRec.Type then
-        //             exit;
+            trigger OnValidate()
+            begin
+                if Type = xRec.Type then
+                    exit;
 
-        //         Description := '';
-        //     end;
-        // }
+                Description := '';
+            end;
+        }
         field(4; "No."; Code[20])
         {
             Caption = 'No.';
             DataClassification = CustomerContent;
-            //             TableRelation =
-            //   if (Type = const(Resource)) Resource where(Type = const(Person), Blocked = const(false))
-            //             else
-            //             if (Type = const("G/L Account")) "G/L Account" where(Blocked = const(false), "Direct Posting" = const(false));
+            TableRelation =
+              if (Type = const(Resource)) Resource where(Type = const(Person), Blocked = const(false))
+            else
+            if (Type = const("G/L Account")) "G/L Account" where(Blocked = const(false), "Direct Posting" = const(false));
 
-            //             trigger OnValidate()
-            //             begin
-            //                 case Type of
-            //                     Type::Resource:
-            //                         begin
-            //                             Resource.GET("No.");
-            //                             Resource.TESTFIELD(Blocked, FALSE);
-            //                             Resource.TestField(Type, Resource.Type::Person);
-            //                             Resource.TESTFIELD("Gen. Prod. Posting Group");
-            //                             Description := Resource.Name;
-            //                             "Gen. Prod. Posting Group" := Resource."Gen. Prod. Posting Group";
-            //                             "VAT Prod. Posting Group" := Resource."VAT Prod. Posting Group";
-            //                             "Unit of Measure Code" := Resource."Base Unit of Measure";
-            //                             "Unit Price" := Resource."Unit Price";
-            //                         end;
-            //                     Type::"G/L Account":
-            //                         begin
-            //                             GLAccount.GET("No.");
-            //                             GLAccount.CheckGLAcc();
-            //                             GLAccount.TESTFIELD("Direct Posting", TRUE);
-            //                             Description := GLAccount.Name;
-            //                             "Gen. Prod. Posting Group" := GLAccount."Gen. Bus. Posting Group";
-            //                             "VAT Prod. Posting Group" := GLAccount."VAT Bus. Posting Group";
-            //                         end;
-            //                 end;
-            //             end;
+            trigger OnValidate()
+            begin
+                case Type of
+                    Type::Resource:
+                        begin
+                            Resource.GET("No.");
+                            Resource.TESTFIELD(Blocked, FALSE);
+                            Resource.TestField(Type, Resource.Type::Person);
+                            Resource.TESTFIELD("Gen. Prod. Posting Group");
+                            Description := Resource.Name;
+                            "Gen. Prod. Posting Group" := Resource."Gen. Prod. Posting Group";
+                            "VAT Prod. Posting Group" := Resource."VAT Prod. Posting Group";
+                            "Unit of Measure Code" := Resource."Base Unit of Measure";
+                            "Unit Price" := Resource."Unit Price";
+                        end;
+                    Type::"G/L Account":
+                        begin
+                            GLAccount.GET("No.");
+                            GLAccount.CheckGLAcc();
+                            GLAccount.TESTFIELD("Direct Posting", TRUE);
+                            Description := GLAccount.Name;
+                            "Gen. Prod. Posting Group" := GLAccount."Gen. Bus. Posting Group";
+                            "VAT Prod. Posting Group" := GLAccount."VAT Bus. Posting Group";
+                        end;
+                end;
+            end;
         }
         field(5; Description; Text[100])
         {
@@ -119,35 +119,35 @@ table 50105 Seminarcharge
         {
             Caption = 'Unit of Measure Code';
             DataClassification = CustomerContent;
-            // TableRelation =
-            //     if (Type = const(Resource)) "Resource Unit of Measure".Code where("Resource No." = field("No."))
-            // else
-            // "Unit of Measure".Code;
+            TableRelation =
+                if (Type = const(Resource)) "Resource Unit of Measure".Code where("Resource No." = field("No."))
+            else
+            "Unit of Measure".Code;
 
-            // trigger OnValidate()
-            // var
-            //     ResourceUofM: Record "Resource Unit of Measure";
-            // begin
-            //     CASE Type OF
-            //         Type::Resource:
-            //             BEGIN
-            //                 Resource.GET("No.");
-            //                 IF "Unit of Measure Code" = '' THEN BEGIN
-            //                     "Unit of Measure Code" := Resource."Base Unit of Measure";
-            //                 END;
-            //                 ResourceUofM.GET("No.", "Unit of Measure Code");
-            //                 "Qty. per Unit of Measure" := ResourceUofM."Qty. per Unit of Measure";
-            //                 "Total Price" := ROUND(Resource."Unit Price" * "Qty. per Unit of Measure");
-            //             END;
-            //         Type::"G/L Account":
-            //             BEGIN
-            //                 "Qty. per Unit of Measure" := 1;
-            //             END;
-            //     END;
-            //     IF CurrFieldNo = FIELDNO("Unit of Measure Code") THEN BEGIN
-            //         VALIDATE("Unit Price");
-            //     END;
-            // end;
+            trigger OnValidate()
+            var
+                ResourceUofM: Record "Resource Unit of Measure";
+            begin
+                CASE Type OF
+                    Type::Resource:
+                        BEGIN
+                            Resource.GET("No.");
+                            IF "Unit of Measure Code" = '' THEN BEGIN
+                                "Unit of Measure Code" := Resource."Base Unit of Measure";
+                            END;
+                            ResourceUofM.GET("No.", "Unit of Measure Code");
+                            "Qty. per Unit of Measure" := ResourceUofM."Qty. per Unit of Measure";
+                            "Total Price" := ROUND(Resource."Unit Price" * "Qty. per Unit of Measure");
+                        END;
+                    Type::"G/L Account":
+                        BEGIN
+                            "Qty. per Unit of Measure" := 1;
+                        END;
+                END;
+                IF CurrFieldNo = FIELDNO("Unit of Measure Code") THEN BEGIN
+                    VALIDATE("Unit Price");
+                END;
+            end;
         }
         field(12; "Gen. Prod. Posting Group"; Code[20])
         {

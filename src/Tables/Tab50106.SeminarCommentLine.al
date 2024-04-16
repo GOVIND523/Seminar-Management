@@ -2,16 +2,16 @@ table 50106 SeminarCommentLine
 {
     Caption = 'Seminar Comment Line';
     DataClassification = CustomerContent;
-    // LookupPageId = SeminarCommentList;
-    // DrillDownPageId = SeminarCommentList;
+    LookupPageId = SeminarCommentList;
+    DrillDownPageId = SeminarCommentList;
 
     fields
     {
-        // field(1; "Document Type"; Enum SeminarCommentLineDocumentType)
-        // {
-        //     Caption = 'Document Type';
-        //     DataClassification = CustomerContent;
-        // }
+        field(1; "Document Type"; Enum SeminarCommentLineDocumentType)
+        {
+            Caption = 'Document Type';
+            DataClassification = CustomerContent;
+        }
         field(2; "No."; Code[20])
         {
             Caption = 'No.';
@@ -45,17 +45,17 @@ table 50106 SeminarCommentLine
     }
     keys
     {
-        // key(PK; "Document Type", "No.", "Document Line No.", "Line No.")
-        // {
-        //     Clustered = true;
-        // }
+        key(PK; "Document Type", "No.", "Document Line No.", "Line No.")
+        {
+            Clustered = true;
+        }
     }
     procedure SetUpNewLine()
     var
         SeminarCommentLine: Record SeminarCommentLine;
     begin
         SeminarCommentLine.Reset();
-        //SeminarCommentLine.SetRange("Document Type", "Document Type");
+        SeminarCommentLine.SetRange("Document Type", "Document Type");
         SeminarCommentLine.SetRange("No.", "No.");
         SeminarCommentLine.SetRange("Document Line No.", "Document Line No.");
         SeminarCommentLine.SetRange(Date, WorkDate());

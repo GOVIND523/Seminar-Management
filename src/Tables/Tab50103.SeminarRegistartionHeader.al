@@ -47,10 +47,6 @@ table 50103 SeminarRegistrationHeader
 
                 end;
             end;
-
-
-
-
         }
         field(3; "Seminar No."; Code[20])
         {
@@ -104,11 +100,11 @@ table 50103 SeminarRegistrationHeader
             CalcFormula = lookup(Resource."No." where("No." = field("Instructor Resource No.")));
 
         }
-        // field(7; Approval_Status; Enum SeminarRegistrationStatus)
-        // {
-        //     Caption = 'Status';
-        //     DataClassification = CustomerContent;
-        // }
+        field(7; Approval_Status; Enum SeminarRegistrationStatus)
+        {
+            Caption = 'Status';
+            DataClassification = CustomerContent;
+        }
         field(8; Duration; Decimal)
         {
             Caption = 'Duration';
@@ -158,18 +154,18 @@ table 50103 SeminarRegistrationHeader
                     IF CurrFieldNo = 0 THEN
                         exit;
 
-                    // IF (SeminarRoom."Maximum Participants" <> 0) AND
-                    //    (SeminarRoom."Maximum Participants" < "Maximum Participants")
-                    // THEN BEGIN
-                    //     IF CONFIRM(ChangeSeminarRoomQst, TRUE,
-                    //          "Maximum Participants",
-                    //          SeminarRoom."Maximum Participants",
-                    //          FIELDCAPTION("Maximum Participants"),
-                    //          "Maximum Participants",
-                    //          SeminarRoom."Maximum Participants")
-                    //     THEN
-                    //         "Maximum Participants" := SeminarRoom."Maximum Participants";
-                    // END;
+                    IF (SeminarRoom."Maximum Participants" <> 0) AND
+                       (SeminarRoom."Maximum Participants" < "Maximum Participants")
+                    THEN BEGIN
+                        IF CONFIRM(ChangeSeminarRoomQst, TRUE,
+                             "Maximum Participants",
+                             SeminarRoom."Maximum Participants",
+                             FIELDCAPTION("Maximum Participants"),
+                             "Maximum Participants",
+                             SeminarRoom."Maximum Participants")
+                        THEN
+                            "Maximum Participants" := SeminarRoom."Maximum Participants";
+                    END;
                 END;
             end;
         }
@@ -224,6 +220,23 @@ table 50103 SeminarRegistrationHeader
         {
             Caption = 'Seminar Price';
             DataClassification = CustomerContent;
+            trigger OnValidate()
+            begin
+                if ("Seminar Price" <> xrec."Seminar Price") and (Approval_Status <> Approval_Status::Cancelled) then begin
+                    SeminarRegLine.Reset();
+                    SeminarRegLine.SetRange("Document No.", "No.");
+                    SeminarRegLine.SetRange(Registered, false);
+                    if SeminarRegLine.find
+                    then
+                        if confirm(ConfirmCharges, false, FieldCaption("Seminar Price"), SeminarRegLine.TableCaption) then begin
+                            repeat
+                                SeminarRegLine.Validate("Seminar Price", "Seminar Price");
+                                SeminarRegLine.Modify();
+                            until SeminarRegLine.next = 0;
+                            Modify;
+                        end;
+                end;
+            end;
         }
         field(20; "Gen. Prod. Posting Group"; Code[20])
         {
@@ -302,35 +315,35 @@ table 50103 SeminarRegistrationHeader
             Caption = 'Ending Date';
         }
 
-        // field(40; Status; Enum ApprovalStatus)
-        // {
-        //     Caption = 'Approval Status';
-        // }
+        field(40; Status; Enum ApprovalStatus)
+        {
+            Caption = 'Approval Status';
+        }
         field(41; No_Printed; Integer)
         {
             DataClassification = ToBeClassified;
             Editable = false;
         }
-        // field(42; "Total Amount"; Decimal)
-        // {
-        //     Editable = false;
-        //     DecimalPlaces = 0 : 5;
-        //     FieldClass = FlowField;
-        //     CalcFormula = sum(SeminarRegistrationLine.Amount where("Document No." = field("No.")));
-        // }
-        // field(43; "Line Discount"; Decimal)
-        // {
-        //     Editable = false;
-        //     DecimalPlaces = 0 : 5;
-        //     FieldClass = FlowField;
-        //     CalcFormula = sum(SeminarRegistrationLine."Line Discount Amount" where("Document No." = field("No.")));
-        // }
-        // field(44; "Number of Lines"; Integer)
-        // {
-        //     Editable = false;
-        //     CalcFormula = count(SeminarRegistrationLine where("Document No." = field("No.")));
-        //     FieldClass = FlowField;
-        // }
+        field(42; "Total Amount"; Decimal)
+        {
+            Editable = false;
+            DecimalPlaces = 0 : 5;
+            FieldClass = FlowField;
+            CalcFormula = sum(SeminarRegistrationLine.Amount where("Document No." = field("No.")));
+        }
+        field(43; "Line Discount"; Decimal)
+        {
+            Editable = false;
+            DecimalPlaces = 0 : 5;
+            FieldClass = FlowField;
+            CalcFormula = sum(SeminarRegistrationLine."Line Discount Amount" where("Document No." = field("No.")));
+        }
+        field(44; "Number of Lines"; Integer)
+        {
+            Editable = false;
+            CalcFormula = count(SeminarRegistrationLine where("Document No." = field("No.")));
+            FieldClass = FlowField;
+        }
         field(45; "End Time"; DateTime)
         {
             DataClassification = ToBeClassified;
@@ -363,12 +376,13 @@ table 50103 SeminarRegistrationHeader
         PostCode: Record "Post Code";
         Seminar: Record Seminar;
         SeminarRegHeader: Record SeminarRegistrationHeader;
-        //SeminarCommentLine: Record SeminarCommentLine;
-        //ChangeSeminarRoomQst: Label 'This Seminar is for %1 participants. \The selected Room has a maximum of %2 participants \Do you want to change %3 for the Seminar from %4 to %5?';
-        //SeminarRegLine: Record SeminarRegistrationLine;
-        //SeminarCharge: Record SeminarCharge;
+        SeminarCommentLine: Record SeminarCommentLine;
+        ChangeSeminarRoomQst: Label 'This Seminar is for %1 participants. \The selected Room has a maximum of %2 participants \Do you want to change %3 for the Seminar from %4 to %5?';
+        SeminarRegLine: Record SeminarRegistrationLine;
+        SeminarCharge: Record SeminarCharge;
         ErrCannotDeleteLine: Label 'Cannot delete the Seminar Registration, there exists at least one %1 where %2=%3.';
         ErrCannotDeleteCharge: Label 'Cannot delete the Seminar Registration, there exists at least one %1.';
+        ConfirmCharges: Label 'Confirm registration with %1 for the %2.';
 
     trigger OnInsert()
     begin
@@ -388,30 +402,29 @@ table 50103 SeminarRegistrationHeader
 
     trigger OnDelete()
     begin
-        //TestField(Approval_Status, Approval_Status::Cancelled);
+        TestField(Approval_Status, Approval_Status::Cancelled);
 
-        // SeminarRegLine.RESET;
-        // SeminarRegLine.SETRANGE("Document No.", "No.");
-        // SeminarRegLine.SETRANGE(Registered, TRUE);
-        // IF SeminarRegLine.FIND('-') THEN
-        //     ERROR(
-        //       ErrCannotDeleteLine,
-        //       SeminarRegLine.TABLECAPTION,
-        //       SeminarRegLine.FIELDCAPTION(Registered),
-        //       TRUE);
-        // SeminarRegLine.SETRANGE(Registered);
-        // SeminarRegLine.DELETEALL(TRUE);
+        SeminarRegLine.RESET;
+        SeminarRegLine.SETRANGE("Document No.", "No.");
+        SeminarRegLine.SETRANGE(Registered, TRUE);
+        IF SeminarRegLine.FIND('-') THEN
+            ERROR(
+              ErrCannotDeleteLine,
+              SeminarRegLine.TABLECAPTION,
+              SeminarRegLine.FIELDCAPTION(Registered),
+              TRUE);
+        SeminarRegLine.SETRANGE(Registered);
+        SeminarRegLine.DELETEALL(TRUE);
 
-        // SeminarCharge.RESET;
-        // SeminarCharge.SETRANGE("Document No.", "No.");
-        // IF NOT SeminarCharge.ISEMPTY THEN
-        //     ERROR(ErrCannotDeleteCharge, SeminarCharge.TABLECAPTION);
+        SeminarCharge.RESET;
+        SeminarCharge.SETRANGE("Document No.", "No.");
+        IF NOT SeminarCharge.ISEMPTY THEN
+            ERROR(ErrCannotDeleteCharge, SeminarCharge.TABLECAPTION);
 
-        // SeminarCommentLine.Reset();
-        // SeminarCommentLine.SetRange(
-        //     "Document Type", SeminarCommentLine."Document Type"::"Seminar Registration");
-        // SeminarCommentLine.SetRange("No.", "No.");
-        // SeminarCommentLine.DeleteAll();
+        SeminarCommentLine.Reset();
+        SeminarCommentLine.SetRange("Document Type", SeminarCommentLine."Document Type"::"Seminar Registration");
+        SeminarCommentLine.SetRange("No.", "No.");
+        SeminarCommentLine.DeleteAll();
     end;
 
     procedure InitRecord()
