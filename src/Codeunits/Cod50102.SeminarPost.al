@@ -12,6 +12,7 @@ codeunit 50102 SeminarPost
         SeminarCharge: Record "SeminarCharge";
         PstdSeminarCharge: Record PostedSeminarCharge;
         Room: Record Resource;
+        NoSeries: Codeunit "No. Series";
         Instructor: Record Resource;
         Customer: Record Seminar;
         ResLedgEntry: Record "Res. Ledger Entry";
@@ -20,7 +21,6 @@ codeunit 50102 SeminarPost
         ResJnlLine: Record "Res. Journal Line";
         SeminarJnlPostLine: Codeunit SeminarJnlPostLine;
         ResJnlPostLine: Codeunit "Res. Jnl.-Post Line";
-        NoSeriesMgt: Codeunit NoSeriesManagement;
         DimMgt: Codeunit DimensionManagement;
         Window: Dialog;
         SourceCode: Code[10];
@@ -62,7 +62,7 @@ codeunit 50102 SeminarPost
 
         IF SeminarRegHeader."Posting No." = '' THEN BEGIN
             Rec.TESTFIELD("Posting No. Series");
-            Rec."Posting No." := NoSeriesMgt.GetNextNo(Rec."Posting No. Series", Rec."Posting Date", TRUE);
+            Rec."Posting No." := NoSeries.GetNextNo(Rec."Posting No. Series", Rec."Posting Date", TRUE);
             Rec.MODIFY;
             COMMIT;
         END;
