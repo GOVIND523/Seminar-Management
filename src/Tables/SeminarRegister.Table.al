@@ -1,3 +1,7 @@
+// SME1.00 - 2024-04-17 - Govind
+//   Chapter 3 - Lab 2
+//     - Seminar Register Table created
+
 table 50111 SeminarRegister
 {
     Caption = 'Seminar Register';

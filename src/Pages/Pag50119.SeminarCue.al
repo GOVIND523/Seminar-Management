@@ -1,3 +1,7 @@
+// SME1.00 - 2024-04-16 - Govind
+//   Chapter 4 - Lab 1
+//     - Added seminar cue table 
+
 page 50119 "Seminar Details"
 {
     ApplicationArea = All;

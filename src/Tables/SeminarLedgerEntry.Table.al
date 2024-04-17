@@ -1,3 +1,7 @@
+// SME1.00 - 2024-04-17 - Govind
+//   Chapter 3 - Lab 2
+//     - Seminar Ledger Entry table created
+
 table 50112 SeminarLedgerEntry
 {
     Caption = 'Seminar Ledger Entry';
@@ -158,9 +162,11 @@ table 50112 SeminarLedgerEntry
             TableRelation = User;
         }
     }
+
     keys
     {
-        key(PK; "Entry No.")
+        key(PK;
+        "Entry No.")
         {
             Clustered = true;
         }

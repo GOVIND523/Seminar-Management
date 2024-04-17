@@ -16,6 +16,8 @@ page 50107 SeminarRegistrationSubform
         {
             repeater(General)
             {
+                //add tooltips from here
+
                 field("Bill-to Customer No."; Rec."Bill-to Customer No.")
                 {
                     ApplicationArea = All;

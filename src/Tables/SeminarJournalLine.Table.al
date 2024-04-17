@@ -1,3 +1,8 @@
+// SME1.00 - 2024-04-17 - Govind
+//   Chapter 4 - Lab 1
+//     - Seminar Journal Line Table created
+//     - Added the EmptyLine() procedure
+//     - Added field validation logic
 table 50110 SeminarJournalLine
 {
     Caption = 'Seminar Journal Line';

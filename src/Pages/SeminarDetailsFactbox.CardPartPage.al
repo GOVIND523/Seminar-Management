@@ -12,6 +12,8 @@ page 50109 SeminarDetailsFactbox
     {
         area(content)
         {
+            //add tooltips from here
+
             group(General)
             {
                 field("No."; Rec."No.")

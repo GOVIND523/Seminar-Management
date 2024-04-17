@@ -21,7 +21,7 @@ table 50102 Seminar
         field(50100; "No."; Code[20])
         {
             DataClassification = ToBeClassified;
-
+            Caption = 'No.';
             trigger OnValidate()
             begin
                 if "No." <> xRec."No." then begin
@@ -34,6 +34,7 @@ table 50102 Seminar
 
         field(50101; "Name"; Text[50])
         {
+            Caption = 'Name';
             DataClassification = ToBeClassified;
             trigger OnValidate()
             begin
@@ -44,38 +45,45 @@ table 50102 Seminar
 
         field(50102; "Seminar Duration"; Decimal)
         {
+            Caption = 'Seminar Duration';
             DataClassification = ToBeClassified;
             DecimalPlaces = 0 : 1;
         }
 
         field(50103; "Minimum Participants"; Integer)
         {
+            Caption = 'Minimum Participants';
             DataClassification = ToBeClassified;
         }
 
         field(50104; "Maximum Participants"; Integer)
         {
+            Caption = 'Maximum Participants';
             DataClassification = ToBeClassified;
         }
 
         field(50105; "Search Name"; Code[50])
         {
+            Caption = 'Search Name';
             DataClassification = ToBeClassified;
         }
 
         field(50106; Blocked; Boolean)
         {
+            Caption = 'Blocked';
             DataClassification = ToBeClassified;
         }
 
         field(50107; "Last Date Modified"; Date)
         {
+            Caption = 'Last Date Modified';
             DataClassification = ToBeClassified;
             Editable = false;
         }
 
         field(50108; Comment; Boolean)
         {
+            Caption = 'Comment';
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = exist("Comment Line" where("Table Name" = const(Seminar), "No." = field("No.")));
@@ -83,12 +91,14 @@ table 50102 Seminar
 
         field(50109; "Seminar Price"; Decimal)
         {
+            Caption = 'Seminar Price';
             DataClassification = ToBeClassified;
             AutoFormatType = 1;
         }
 
         field(50110; "Gen. Prod. Posting Group"; Code[10])
         {
+            Caption = 'Gen. prod. Posting Group';
             DataClassification = ToBeClassified;
             TableRelation = "Gen. Product Posting Group";
 
@@ -104,17 +114,20 @@ table 50102 Seminar
 
         field(50111; "VAT Prod. Posting Group"; Code[10])
         {
+            Caption = 'VAT Prod. Posting Group';
             DataClassification = ToBeClassified;
             TableRelation = "VAT Product Posting Group";
         }
 
         field(50112; "No. Series"; Code[10])
         {
+            Caption = 'No. Series';
             TableRelation = "No. Series";
         }
 
         field(50113; "Total Booking"; Integer)
         {
+            Caption = 'Total Bookings';
             FieldClass = FlowField;
             Editable = false;
             CalcFormula = count(SeminarRegistrationLine where("Seminar No." = field("No.")));

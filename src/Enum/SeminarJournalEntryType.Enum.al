@@ -1,3 +1,7 @@
+// SME1.00 - 2024-04-17 - Govind
+//   Chapter 4 - Lab 2
+//     - SeminarJournalEntryType enum created
+
 enum 50107 SeminarJournalEntryType
 {
     Extensible = true;

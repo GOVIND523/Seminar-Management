@@ -19,6 +19,7 @@ page 50105 SeminarRegistration
             {
                 field("No."; Rec."No.")
                 {
+                    ToolTip = 'Identifes a seminar registartion uniquely.';
                     ApplicationArea = All;
                     AssistEdit = true;
 
@@ -30,29 +31,38 @@ page 50105 SeminarRegistration
                 }
                 field("Starting Date"; Rec."Starting Date")
                 {
+                    ToolTip = 'Specifies the seminar starting date.';
                     ApplicationArea = All;
 
                 }
                 field("Seminar No."; Rec."Seminar No.")
                 {
+                    ToolTip = 'Specifies the number of the seminar unique for each seminar.';
                     ApplicationArea = All;
                 }
                 field("Seminar Name"; Rec."Seminar Name")
                 {
+                    ToolTip = 'Secifies the name of seminar.';
                     ApplicationArea = All;
                 }
                 field("Instructor Code"; Rec."Instructor Resource No.")
                 {
+                    ToolTip = 'Secifies the Instructor Code of seminar.';
                     ApplicationArea = All;
                 }
                 field("Instructor Name"; Rec."Instructor Name")
                 {
+                    ToolTip = 'Secifies the Instructor Name of seminar.';
                     ApplicationArea = All;
                 }
                 field("Posting Date"; Rec."Posting Date")
                 {
+                    ToolTip = 'Secifies the Posting Date of seminar.';
                     ApplicationArea = All;
                 }
+
+                //add tooltips from here 
+
                 field("Document Date"; Rec."Document Date")
                 {
                     ApplicationArea = All;

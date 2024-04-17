@@ -9,14 +9,12 @@ pageextension 50101 "ResourceListPageExt" extends "Resource List" //OriginalId
         {
             field("Internal/External"; Rec."Internal/External")
             {
-                Caption = 'Internal/External';
                 ToolTip = 'Specifies wether the resource is internal or external.';
                 ApplicationArea = All;
             }
 
             field("Maximum Participants"; Rec."Maximum Participants")
             {
-                Caption = 'Maximum Participants';
                 Visible = ShowMaxParticipants;
                 Tooltip = 'Maximum participants for the resource.';
                 ApplicationArea = All;
