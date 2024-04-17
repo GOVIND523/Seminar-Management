@@ -48,7 +48,7 @@ page 50112 PostedSeminarRegistration
                 {
                     ApplicationArea = All;
                 }
-                field(Approval_Status; Rec.Approval_Status)
+                field(Approval_Status; Rec."Approval Status")
                 {
                     ApplicationArea = All;
                 }

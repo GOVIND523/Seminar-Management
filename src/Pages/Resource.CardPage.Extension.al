@@ -1,4 +1,8 @@
-pageextension 50100 "ResourceCardExt" extends "Resource Card" //OriginalId
+// SME1.00 - 2024-04-16 - Govind
+//   Chapter 2 - Lab 1
+//     - Added Internal/External and Quantity Per Day fields to General FastTab
+//     - Added Max Participants field to Room FastTab
+pageextension 50100 "ResourceCardPageExt" extends "Resource Card" //OriginalId
 {
     layout
     {

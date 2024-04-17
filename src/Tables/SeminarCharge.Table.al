@@ -1,3 +1,7 @@
+// SME1.00 - 2024-04-17 - Govind
+//   Chapter 3 - Lab 1 
+//     -- Seminar Charges table created
+
 table 50105 Seminarcharge
 {
     Caption = 'Seminar Charge';
@@ -28,7 +32,6 @@ table 50105 Seminarcharge
             begin
                 if Type = xRec.Type then
                     exit;
-
                 Description := '';
             end;
         }
@@ -36,8 +39,7 @@ table 50105 Seminarcharge
         {
             Caption = 'No.';
             DataClassification = CustomerContent;
-            TableRelation =
-              if (Type = const(Resource)) Resource where(Type = const(Person), Blocked = const(false))
+            TableRelation = if (Type = const(Resource)) Resource where(Type = const(Person), Blocked = const(false))
             else
             if (Type = const("G/L Account")) "G/L Account" where(Blocked = const(false), "Direct Posting" = const(false));
 

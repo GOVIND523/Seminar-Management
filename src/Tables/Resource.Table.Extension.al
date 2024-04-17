@@ -1,3 +1,6 @@
+// SME1.00 - 2024-04-16 - Govind
+//   Chapter 2 - Lab 1
+//     - Add fields to the resource table 
 tableextension 50100 "Resouce Extension" extends Resource
 {
     fields
@@ -14,7 +17,7 @@ tableextension 50100 "Resouce Extension" extends Resource
             DataClassification = ToBeClassified;
             Caption = 'Maximum Participants';
         }
-        field(501012; "Quantity Per Day"; Decimal)
+        field(50102; "Quantity Per Day"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Qunatity Per Day';

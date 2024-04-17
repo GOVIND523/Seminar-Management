@@ -124,7 +124,7 @@ page 50118 "Seminar Manager Role Center"
                 ApplicationArea = Basic, Suite;
                 Caption = 'Ongoing Seminar Registration';
                 RunObject = Page SeminarRegistration;
-                RunPageView = WHERE(Approval_Status = CONST(Registration));
+                RunPageView = WHERE("Status" = CONST(Registration));
                 ToolTip = 'Post item transactions directly to the item ledger to adjust inventory in connection with purchases, sales, and positive or negative adjustments without using documents. You can save sets of item journal lines as standard journals so that you can perform recurring postings quickly. A condensed version of the item journal function exists on item cards for quick adjustment of an items inventory quantity.';
             }
             action("Closed Seminar Registration")
@@ -132,7 +132,7 @@ page 50118 "Seminar Manager Role Center"
                 ApplicationArea = Planning;
                 Caption = 'Closed Seminar Registration';
                 RunObject = Page SeminarRegistrationList;
-                RunPageView = WHERE(Approval_Status = CONST(Closed));
+                RunPageView = WHERE("Status" = CONST(Closed));
                 ToolTip = 'Calculate a supply plan to fulfill item demand with purchases or transfers.';
             }
             action("Registration Awaiting Approval")
@@ -140,7 +140,7 @@ page 50118 "Seminar Manager Role Center"
                 ApplicationArea = Planning;
                 Caption = 'Registration Awaiting Approval';
                 RunObject = Page SeminarRegistrationList;
-                RunPageView = WHERE(Status = const(Pending));
+                RunPageView = WHERE("Approval Status" = const(Pending));
                 ToolTip = 'Calculate a supply plan to fulfill item demand with purchases or transfers.';
             }
             action("Approved Seminar Registration")
@@ -148,7 +148,7 @@ page 50118 "Seminar Manager Role Center"
                 ApplicationArea = Planning;
                 Caption = 'Approved Seminar Registration';
                 RunObject = Page SeminarRegistrationList;
-                RunPageView = WHERE(Status = const(Approved));
+                RunPageView = WHERE("Approval Status" = const(Approved));
                 ToolTip = 'Calculate a supply plan to fulfill item demand with purchases or transfers.';
             }
         }

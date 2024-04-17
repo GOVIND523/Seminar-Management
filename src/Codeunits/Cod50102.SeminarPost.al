@@ -47,8 +47,8 @@ codeunit 50102 SeminarPost
         SeminarRegHeader.TESTFIELD(Duration);
         SeminarRegHeader.TESTFIELD("Instructor Resource No.");
         SeminarRegHeader.TESTFIELD("Room Resource No.");
-        SeminarRegHeader.TESTFIELD(Approval_Status, SeminarRegHeader.Approval_Status::Closed);
-        SeminarRegHeader.TestField(Status, SeminarRegHeader.Status::Approved);
+        SeminarRegHeader.TESTFIELD("Status", SeminarRegHeader."Status"::Closed);
+        SeminarRegHeader.TestField("Approval Status", SeminarRegHeader."Approval Status"::Approved);
 
         SeminarRegLine.RESET;
         SeminarRegLine.SETRANGE("Document No.", Rec."No.");

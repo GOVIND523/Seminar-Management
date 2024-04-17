@@ -1,4 +1,7 @@
-pageextension 50101 "ResourceListExt" extends "Resource List" //OriginalId
+// SME1.00 - 2024-04-16 - Govind
+//   Chapter 2 - Lab 1
+//      - Added Int/Ext, Max Participants to the listpage
+pageextension 50101 "ResourceListPageExt" extends "Resource List" //OriginalId
 {
     layout
     {
@@ -10,12 +13,7 @@ pageextension 50101 "ResourceListExt" extends "Resource List" //OriginalId
                 ToolTip = 'Specifies wether the resource is internal or external.';
                 ApplicationArea = All;
             }
-            // field("Quantity Per Day"; Rec."Quantity Per Day")
-            // {
-            //     Caption = 'Quantity Per Day';
-            //     ToolTip = 'Specifies the quantity the resource can accomodate per day.';
-            //     ApplicationArea = all;
-            // }
+
             field("Maximum Participants"; Rec."Maximum Participants")
             {
                 Caption = 'Maximum Participants';

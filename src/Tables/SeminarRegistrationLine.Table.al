@@ -1,3 +1,9 @@
+// SME1.00 - 2024-04-17 - Govind
+//   Chapter 3 - Lab 1
+//     - added Seminar registartion Line table to the application area
+//     - added procedures 
+//     - added logic to table and field triggers
+//     -- addded logic in OnInsert to check for avalibility of bookings and only then  insert the line
 table 50104 SeminarRegistrationLine
 {
     Caption = 'Seminar Registration Line';
@@ -16,6 +22,12 @@ table 50104 SeminarRegistrationLine
             Caption = 'Line No.';
             DataClassification = CustomerContent;
         }
+
+        field(50100; "Seminar No."; Code[20])
+        {
+            Caption = 'Seminar No';
+            DataClassification = ToBeClassified;
+        }
         field(3; "Bill-to Customer No."; Code[20])
         {
             Caption = 'Bill-to Customer No.';
@@ -33,26 +45,6 @@ table 50104 SeminarRegistrationLine
             DataClassification = CustomerContent;
             TableRelation = Contact;
 
-            trigger OnValidate()
-            begin
-                IF ("Bill-to Customer No." = '') or
-                   ("Participant Contact No." = '')
-                THEN
-                    exit;
-
-                Contact.GET("Participant Contact No.");
-                ContactBusinessRelation.RESET;
-                ContactBusinessRelation.SETCURRENTKEY("Link to Table", "No.");
-                ContactBusinessRelation.SETRANGE("Link to Table", ContactBusinessRelation."Link to Table"::Customer);
-                ContactBusinessRelation.SETRANGE("No.", "Bill-to Customer No.");
-                IF not ContactBusinessRelation.FINDFIRST THEN
-                    exit;
-
-                IF ContactBusinessRelation."Contact No." <> Contact."Company No." THEN BEGIN
-                    ERROR(ContactHasDifferentCompanyThanCustomer, Contact."No.", Contact.Name, "Bill-to Customer No.");
-                END;
-            end;
-
             trigger OnLookup()
             begin
                 ContactBusinessRelation.RESET;
@@ -68,12 +60,29 @@ table 50104 SeminarRegistrationLine
                     "Participant Name" := Contact.Name;
                 END;
             end;
+
+            trigger OnValidate()
+            begin
+                IF ("Bill-to Customer No." = '') or ("Participant Contact No." = '') THEN
+                    exit;
+
+                Contact.GET("Participant Contact No.");
+                ContactBusinessRelation.RESET;
+                ContactBusinessRelation.SETCURRENTKEY("Link to Table", "No.");
+                ContactBusinessRelation.SETRANGE("Link to Table", ContactBusinessRelation."Link to Table"::Customer);
+                ContactBusinessRelation.SETRANGE("No.", "Bill-to Customer No.");
+                IF not ContactBusinessRelation.FINDFIRST THEN
+                    exit;
+
+                IF ContactBusinessRelation."Contact No." <> Contact."Company No." THEN BEGIN
+                    ERROR(ContactHasDifferentCompanyThanCustomer, Contact."No.", Contact.Name, "Bill-to Customer No.");
+                END;
+            end;
         }
         field(5; "Participant Name"; Text[100])
         {
             Caption = 'Participant Name';
             DataClassification = CustomerContent;
-            // FieldClass = FlowField;
             Editable = false;
         }
         field(6; "Registration Date"; Date)
@@ -104,7 +113,6 @@ table 50104 SeminarRegistrationLine
             Caption = 'Seminar Price';
             DataClassification = CustomerContent;
             AutoFormatType = 2;
-
             trigger OnValidate()
             begin
                 Validate("Line Discount %");
@@ -117,8 +125,6 @@ table 50104 SeminarRegistrationLine
             MinValue = 0;
             MaxValue = 100;
             DecimalPlaces = 0 : 5;
-
-
             trigger OnValidate()
             begin
                 IF "Seminar Price" = 0 THEN BEGIN
@@ -185,6 +191,9 @@ table 50104 SeminarRegistrationLine
     trigger OnInsert()
     begin
         GetSeminarRegHeader;
+        if SeminarRegHeader."Avaiable Bookings" = 0 then
+            Error(ErrorOnNoAvailibility, "Seminar No.", SeminarRegHeader."Seminar Name");
+
         "Registration Date" := WORKDATE;
         "Seminar Price" := SeminarRegHeader."Seminar Price";
         Amount := SeminarRegHeader."Seminar Price";
@@ -201,17 +210,21 @@ table 50104 SeminarRegistrationLine
         Contact: Record Contact;
         ContactBusinessRelation: Record "Contact Business Relation";
         ContactHasDifferentCompanyThanCustomer: Label 'Contact %1 %2 is related to a different company than customer %3.';
+        Seminar: record Seminar;
+        ErrorOnNoAvailibility: Label 'Cant register more participants as no more bookings are available for seminar %1 %2';
 
     PROCEDURE GetSeminarRegHeader();
     BEGIN
         IF SeminarRegHeader."No." <> "Document No." THEN BEGIN
             SeminarRegHeader.GET("Document No.");
+            "Seminar No." := SeminarRegHeader."No.";
         END;
     END;
 
-    PROCEDURE CalculateAmount();
+    PROCEDURE CalculateAmount(var Amount: Decimal): Decimal
     BEGIN
         Amount := ROUND(("Seminar Price" / 100) * (100 - "Line Discount %"));
+        exit(Amount);
     END;
 
     PROCEDURE UpdateAmount();

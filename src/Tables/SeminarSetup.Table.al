@@ -1,6 +1,11 @@
+// SME1.00 - 2024-04-16 - Govind
+//   Chapter 2 - Lab 2
+//     - Setup table added to application area
+
 table 50101 "Seminar Setup"
 {
     Caption = 'Seminar Setup';
+
     fields
     {
         field(50100; "Primary Key"; Code[10])

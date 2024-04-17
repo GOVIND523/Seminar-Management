@@ -102,7 +102,7 @@ codeunit 50106 CApprovals
             Database::SeminarRegistrationHeader:
                 begin
                     RecRef.SetTable(SemReg);
-                    SemReg.Validate(Status, SemReg.Status::Open);
+                    SemReg.Validate("Approval Status", SemReg."Approval Status"::Open);
                     SemReg.Modify;
                     Variant := SemReg;
                     Handled := true;
@@ -122,7 +122,7 @@ codeunit 50106 CApprovals
             Database::SeminarRegistrationHeader:
                 begin
                     RecRef.SetTable(SemReg);
-                    SemReg.Validate(Status, SemReg.Status::Approved);
+                    SemReg.Validate("Approval Status", SemReg."Approval Status"::Approved);
                     SemReg.Modify;
                     Variant := SemReg;
                 end;
@@ -143,7 +143,7 @@ codeunit 50106 CApprovals
             Database::"SeminarRegistrationHeader":
                 begin
                     RecRef.SetTable(SemReg);
-                    SemReg.Validate(Status, SemReg.Status::"Pending");
+                    SemReg.Validate("Approval Status", SemReg."Approval Status"::"Pending");
                     SemReg.Modify;
                     Variant := SemReg;
                     IsHandled := true;

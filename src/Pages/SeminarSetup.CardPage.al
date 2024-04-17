@@ -1,3 +1,8 @@
+// SME1.00 - 2024-04-16 - Govind
+//   Chapter 2 - Lab 3
+//     - Seminar Setup Card Page created
+//     - Modified OnOpenPage trigger to populate the card page
+
 page 50103 "Seminar Setup"
 {
     ApplicationArea = All;

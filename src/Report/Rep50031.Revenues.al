@@ -10,7 +10,7 @@ report 50104 Revenues
         dataitem(SeminarRegistrationHeader; SeminarRegistrationHeader)
         {
             //DataItemTableView = where(Posted = filter(true));
-            column(Approval_Status; Approval_Status)
+            column(ApprovalStatus; "Approval Status")
             {
             }
             column(Comment; Comment)

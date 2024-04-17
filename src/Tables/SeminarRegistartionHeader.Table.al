@@ -1,8 +1,18 @@
+// SME1.00 - 2024-04-16 - Govind
+//   Chapter 3 - Lab 1
+//     - Seminar Reg Header Table Created
+//     - added logic field and table triggers
+//     - added procedure OnAssistEdit(), SetDateTime(), InItRecoord()
+
+// SME1.00 - 2024-04-17 - Govind
+//   Chapter 3 - Lab 1 Additional
+//     -- added the available seats field as a flowfield
+
 table 50103 SeminarRegistrationHeader
 {
     Caption = 'Seminar Registration Header';
     DataClassification = CustomerContent;
-    //LookupPageId = SeminarRegistrationList;
+    LookupPageId = SeminarRegistrationList;
 
     fields
     {
@@ -13,13 +23,11 @@ table 50103 SeminarRegistrationHeader
 
             trigger OnValidate()
             begin
-                if "No." = xRec."No." then
-                    exit;
-
-                SeminarSetup.Get();
-                SeminarSetup.TestField("Seminar Registration Nos.");
-                NoSeries.TestManual(SeminarSetup."Seminar Registration Nos.");
-                "No. Series" := '';
+                if "No." <> xRec."No." then begin
+                    SeminarSetup.Get();
+                    NoSeries.TestManual(SeminarSetup."Seminar Registration Nos.");
+                    "No. Series" := '';
+                end;
             end;
         }
         field(2; "Starting Date"; DateTime)
@@ -34,17 +42,11 @@ table 50103 SeminarRegistrationHeader
             trigger OnValidate()
             var
             begin
-                // Calculate end time only if starting date and duration are provided
+                if "Starting Date" <> xRec."Starting Date" then
+                    TestField(Status, Status::Planning);
                 if ("Starting Date" <> 0DT) AND ("Seminar No." <> '') THEN begin
-                    MESSAGE('Starting Date: ' + FORMAT("Starting Date"));
-                    MESSAGE('Duration: ' + FORMAT(Duration));
-
-
-                    // Calculate end time by adding duration (in hours) to starting time
-                    "End Time" := "Starting Date" + (Duration * 3600000); // Convert hours to seconds
-
+                    "End Time" := "Starting Date" + (Duration * 3600000);
                     Message(Format("End Time" - "Starting Date"));
-
                 end;
             end;
         }
@@ -58,6 +60,12 @@ table 50103 SeminarRegistrationHeader
             begin
                 IF "Seminar No." = xRec."Seminar No." THEN
                     exit;
+
+                SeminarRegLine.Reset();
+                SeminarRegLine.SetRange("Document No.", "No.");
+                SeminarRegLine.SetRange(Registered, True);
+                if not SeminarRegLine.IsEmpty then
+                    Error(ErrorCannotChangeSeminarNo, xRec."Seminar No.", "Seminar No.", FieldCaption("Seminar No."), SeminarRegLine.TableCaption, SeminarRegLine.FieldCaption(Registered), true);
 
                 Seminar.GET("Seminar No.");
                 Seminar.TESTFIELD(Blocked, FALSE);
@@ -100,9 +108,9 @@ table 50103 SeminarRegistrationHeader
             CalcFormula = lookup(Resource."No." where("No." = field("Instructor Resource No.")));
 
         }
-        field(7; Approval_Status; Enum SeminarRegistrationStatus)
+        field(7; "Approval Status"; Enum ApprovalStatus)
         {
-            Caption = 'Status';
+            Caption = 'Approval Status';
             DataClassification = CustomerContent;
         }
         field(8; Duration; Decimal)
@@ -119,6 +127,22 @@ table 50103 SeminarRegistrationHeader
         {
             Caption = 'Minimum Participants';
             DataClassification = CustomerContent;
+        }
+        field(50100; "Total Bookings"; Integer)
+        {
+            Caption = 'Total Bookings';
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = lookup(Seminar."Total Booking" where("No." = field("Seminar No.")));
+            trigger OnValidate()
+            begin
+                "Avaiable Bookings" := "Maximum Participants" - "Total Bookings";
+            end;
+        }
+        field(50101; "Avaiable Bookings"; Integer)
+        {
+            Caption = 'Available Bookings';
+            Editable = false;
         }
         field(11; "Room Resource No."; Code[20])
         {
@@ -151,18 +175,11 @@ table 50103 SeminarRegistrationHeader
                     "Room County" := SeminarRoom.County;
                     "Room Country/Reg. Code" := SeminarRoom."Country/Region Code";
 
-                    IF CurrFieldNo = 0 THEN
-                        exit;
+                    // IF CurrFieldNo = 0 THEN
+                    //     exit;
 
-                    IF (SeminarRoom."Maximum Participants" <> 0) AND
-                       (SeminarRoom."Maximum Participants" < "Maximum Participants")
-                    THEN BEGIN
-                        IF CONFIRM(ChangeSeminarRoomQst, TRUE,
-                             "Maximum Participants",
-                             SeminarRoom."Maximum Participants",
-                             FIELDCAPTION("Maximum Participants"),
-                             "Maximum Participants",
-                             SeminarRoom."Maximum Participants")
+                    IF (SeminarRoom."Maximum Participants" <> 0) AND (SeminarRoom."Maximum Participants" < "Maximum Participants") THEN BEGIN
+                        IF CONFIRM(ChangeSeminarRoomQst, TRUE, "Maximum Participants", SeminarRoom."Maximum Participants", FIELDCAPTION("Maximum Participants"), "Maximum Participants", SeminarRoom."Maximum Participants")
                         THEN
                             "Maximum Participants" := SeminarRoom."Maximum Participants";
                     END;
@@ -193,11 +210,7 @@ table 50103 SeminarRegistrationHeader
 
             trigger OnValidate()
             begin
-                PostCode.ValidatePostCode("Room City",
-                    "Room Post Code",
-                    "Room County",
-                    "Room Country/Reg. Code",
-                    (CurrFieldNo <> 0) and GuiAllowed);
+                PostCode.ValidatePostCode("Room City", "Room Post Code", "Room County", "Room Country/Reg. Code", (CurrFieldNo <> 0) and GuiAllowed);
             end;
         }
         field(16; "Room City"; Text[50])
@@ -222,7 +235,7 @@ table 50103 SeminarRegistrationHeader
             DataClassification = CustomerContent;
             trigger OnValidate()
             begin
-                if ("Seminar Price" <> xrec."Seminar Price") and (Approval_Status <> Approval_Status::Cancelled) then begin
+                if ("Seminar Price" <> xrec."Seminar Price") and ("Status" <> "Status"::Cancelled) then begin
                     SeminarRegLine.Reset();
                     SeminarRegLine.SetRange("Document No.", "No.");
                     SeminarRegLine.SetRange(Registered, false);
@@ -315,9 +328,9 @@ table 50103 SeminarRegistrationHeader
             Caption = 'Ending Date';
         }
 
-        field(40; Status; Enum ApprovalStatus)
+        field(40; Status; Enum SeminarRegistrationStatus)
         {
-            Caption = 'Approval Status';
+            Caption = 'Status';
         }
         field(41; No_Printed; Integer)
         {
@@ -380,6 +393,7 @@ table 50103 SeminarRegistrationHeader
         ChangeSeminarRoomQst: Label 'This Seminar is for %1 participants. \The selected Room has a maximum of %2 participants \Do you want to change %3 for the Seminar from %4 to %5?';
         SeminarRegLine: Record SeminarRegistrationLine;
         SeminarCharge: Record SeminarCharge;
+        ErrorCannotChangeSeminarNo: Label 'Cannot change the seminar number from %1 to %2 as there exists records in %3 as %4';
         ErrCannotDeleteLine: Label 'Cannot delete the Seminar Registration, there exists at least one %1 where %2=%3.';
         ErrCannotDeleteCharge: Label 'Cannot delete the Seminar Registration, there exists at least one %1.';
         ConfirmCharges: Label 'Confirm registration with %1 for the %2.';
@@ -389,27 +403,26 @@ table 50103 SeminarRegistrationHeader
         if "No." = '' then begin
             SeminarSetup.Get();
             SeminarSetup.TestField("Seminar Registration Nos.");
-            "No. Series" := NoSeries.GetNextNo(SeminarSetup."Seminar Nos.");
+            "No." := NoSeries.GetNextNo(SeminarSetup."Seminar Registration Nos.");
         END;
         InitRecord;
 
-        if GetFilter("Seminar No.") = '' then
-            exit;
+        // if GetFilter("Seminar No.") = '' then
+        //     exit;
 
-        IF GetRangeMin("Seminar No.") = GetRangeMax("Seminar No.") THEN
-            Validate("Seminar No.", GetRangeMin("Seminar No."));
+        // IF GetRangeMin("Seminar No.") = GetRangeMax("Seminar No.") THEN
+        //     Validate("Seminar No.", GetRangeMin("Seminar No."));
     end;
 
     trigger OnDelete()
     begin
-        TestField(Approval_Status, Approval_Status::Cancelled);
+        TestField(Status, Status::Cancelled);
 
         SeminarRegLine.RESET;
         SeminarRegLine.SETRANGE("Document No.", "No.");
         SeminarRegLine.SETRANGE(Registered, TRUE);
         IF SeminarRegLine.FIND('-') THEN
-            ERROR(
-              ErrCannotDeleteLine,
+            ERROR(ErrCannotDeleteLine,
               SeminarRegLine.TABLECAPTION,
               SeminarRegLine.FIELDCAPTION(Registered),
               TRUE);
@@ -444,11 +457,8 @@ table 50103 SeminarRegistrationHeader
         SeminarRegHeader := Rec;
         SeminarSetup.Get();
         SeminarSetup.TestField("Seminar Registration Nos.");
-        if not NoSeries.LookupRelatedNoSeries(
-            SeminarSetup."Seminar Registration Nos.",
-            OldSeminarRegHeader."No. Series", "No. Series") then
+        if not NoSeries.LookupRelatedNoSeries(SeminarSetup."Seminar Registration Nos.", OldSeminarRegHeader."No. Series", "No. Series") then
             exit(false);
-
         SeminarSetup.Get();
         SeminarSetup.TestField("Seminar Registration Nos.");
         SeminarRegHeader."No." := NoSeries.GetNextNo(SeminarSetup."Seminar Registration Nos.");

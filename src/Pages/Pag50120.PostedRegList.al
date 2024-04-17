@@ -32,7 +32,7 @@ page 50120 "Posted Reg List"
                 {
                     ApplicationArea = All;
                 }
-                field(Status; Rec.Approval_Status)
+                field(Status; Rec.Status)
                 {
                     ApplicationArea = All;
                 }

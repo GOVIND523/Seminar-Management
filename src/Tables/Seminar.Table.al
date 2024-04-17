@@ -1,3 +1,15 @@
+// SME1.00 - 2024-04-16 - Govind
+//   Chapter 2 - Lab 2
+//     - Add fields to the table 
+//     - Configuring the comment line field as flow field
+//     - adding primary and secondary key
+//     - adding code to seminar table
+//     - added code to table triggers 
+//     - added a procedure OnAssistEdit()
+
+// SME1.00 - 2024-04-17 - Govind
+//   Chapter 3 - Lab 1
+//     -- Adding a flowfield for maintaining booked seats for the seminar 
 table 50102 Seminar
 {
     Caption = 'Seminar';
@@ -23,10 +35,9 @@ table 50102 Seminar
         field(50101; "Name"; Text[50])
         {
             DataClassification = ToBeClassified;
-
             trigger OnValidate()
             begin
-                if Name = UpperCase(xRec.Name) then
+                if "Name" = UpperCase(xRec.Name) then
                     "Search Name" := Name;
             end;
         }
@@ -101,6 +112,13 @@ table 50102 Seminar
         {
             TableRelation = "No. Series";
         }
+
+        field(50113; "Total Booking"; Integer)
+        {
+            FieldClass = FlowField;
+            Editable = false;
+            CalcFormula = count(SeminarRegistrationLine where("Seminar No." = field("No.")));
+        }
     }
 
     keys
@@ -120,14 +138,12 @@ table 50102 Seminar
         GenProPostingRec: Record "Gen. Product Posting Group";
         NoSeries: Codeunit "No. Series";
 
-
-
     trigger OnInsert()
     begin
         if rec."No." = '' then begin
             SeminarSetupRec.Get();
             SeminarSetupRec.TestField("Seminar Nos.");
-            NoSeries.GetNextNo(SeminarSetupRec."Seminar Nos.");
+            "No." := NoSeries.GetNextNo(SeminarSetupRec."Seminar Nos.");
         end;
     end;
 
@@ -150,7 +166,6 @@ table 50102 Seminar
     end;
 
 
-    // needs adjustments
     procedure AssistEdit(OldSeminar: Record Seminar) Result: Boolean
     begin
         SeminarRec := Rec;
@@ -162,18 +177,4 @@ table 50102 Seminar
             exit(true);
         end;
     end;
-
-
-
-
-    // Res := Rec;
-    // ResSetup.Get();
-    // ResSetup.TestField("Resource Nos.");
-    // if NoSeries.LookupRelatedNoSeries(ResSetup."Resource Nos.", OldRes."No. Series", Res."No. Series") then begin
-    //     Res."No." := NoSeries.GetNextNo(Res."No. Series");
-    //     Rec := Res;
-    //     exit(true);
-    // end;
-
-
 }

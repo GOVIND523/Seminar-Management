@@ -1,6 +1,10 @@
+// SME1.00 - 2024-04-17 - Govind
+//   Chapter 3 - Lab 2
+//     - Seminar Registartion subform listpart page created
+
 page 50107 SeminarRegistrationSubform
 {
-    Caption = 'Seminar Lnes';
+    Caption = 'Seminar Lines';
     PageType = ListPart;
     SourceTable = SeminarRegistrationLine;
     DelayedInsert = true;

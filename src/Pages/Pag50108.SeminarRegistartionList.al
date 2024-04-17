@@ -30,7 +30,7 @@ page 50108 SeminarRegistrationList
                 {
                     ApplicationArea = All;
                 }
-                field(Status; Rec.Approval_Status)
+                field(Status; Rec."Approval Status")
                 {
                     ApplicationArea = All;
                 }

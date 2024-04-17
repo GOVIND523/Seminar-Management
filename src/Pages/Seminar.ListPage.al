@@ -1,3 +1,8 @@
+// SME1.00 - 2024-04-16 - Govind
+//   Chapter 2 - Lab 3
+//     - Seminar List Page created
+//     - Adding comments action
+
 page 50102 "Seminar List"
 {
     ApplicationArea = All;
@@ -15,26 +20,38 @@ page 50102 "Seminar List"
             {
                 field("No."; Rec."No.")
                 {
+                    Caption = 'No.';
+                    ApplicationArea = all;
                     ToolTip = 'Specifies the value of the No. field.';
                 }
                 field(Name; Rec.Name)
                 {
+                    Caption = 'Name';
+                    ApplicationArea = all;
                     ToolTip = 'Specifies the value of the Name field.';
                 }
                 field("Seminar Duration"; Rec."Seminar Duration")
                 {
+                    Caption = 'Seminar Duration';
+                    ApplicationArea = all;
                     ToolTip = 'Specifies the value of the Seminar Duration field.';
                 }
                 field("Seminar Price"; Rec."Seminar Price")
                 {
+                    Caption = 'Seminar Price';
+                    ApplicationArea = all;
                     ToolTip = 'Specifies the value of the Seminar Price field.';
                 }
                 field("Gen. Prod. Posting Group"; Rec."Gen. Prod. Posting Group")
                 {
+                    Caption = 'Gen. Prod. Posting Group';
+                    ApplicationArea = all;
                     ToolTip = 'Specifies the value of the Gen. Prod. Posting Group field.';
                 }
                 field("VAT Prod. Posting Group"; Rec."VAT Prod. Posting Group")
                 {
+                    Caption = 'VAT. Pro. Posting Group';
+                    ApplicationArea = all;
                     ToolTip = 'Specifies the value of the VAT Prod. Posting Group field.';
                 }
             }

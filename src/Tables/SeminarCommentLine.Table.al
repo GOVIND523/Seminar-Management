@@ -1,3 +1,7 @@
+// SME1.00 - 2024-04-17 - Govind
+//   Chapter 3 - Lab 1 Additional
+//     - Seminar Comment Line  table created
+
 table 50106 SeminarCommentLine
 {
     Caption = 'Seminar Comment Line';

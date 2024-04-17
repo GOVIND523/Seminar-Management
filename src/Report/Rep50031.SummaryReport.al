@@ -9,7 +9,7 @@ report 50105 "Summary Report"
     {
         dataitem(SeminarRegistrationHeader; SeminarRegistrationHeader)
         {
-            column(Approval_Status; Approval_Status)
+            column(ApprovalStatus; "Approval Status")
             {
             }
             column(Comment; Comment)

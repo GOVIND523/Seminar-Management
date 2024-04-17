@@ -1,6 +1,7 @@
-/// <summary>
-/// Page SeminarRegistration (ID 50060).
-/// </summary>
+// SME1.00 - 2024-04-17 - Govind
+//   Chapter 3 - Lab 2
+//     - Seminar Registartion document page created
+
 page 50105 SeminarRegistration
 {
     Caption = 'Seminar Registration';
@@ -56,11 +57,11 @@ page 50105 SeminarRegistration
                 {
                     ApplicationArea = All;
                 }
-                field("Document Status"; Rec.Approval_Status)
+                field("Document Status"; Rec.Status)
                 {
                     ApplicationArea = All;
                 }
-                field(Approval_Status; Rec.Status)
+                field(Approval_Status; Rec."Approval Status")
                 {
                     ApplicationArea = All;
                     Editable = false;
@@ -259,7 +260,7 @@ page 50105 SeminarRegistration
                     var
                         SeminarPost: Codeunit SeminarPost;
                     begin
-                        Rec.TestField(Status, Rec.Status::Approved);
+                        Rec.TestField("Approval Status", Rec."Approval Status"::Approved);
                         if Confirm('Are you sure you want to post') = true then begin
 
                             SeminarPost.postSeminar(Rec);
@@ -310,7 +311,7 @@ page 50105 SeminarRegistration
                         VarVariant: Variant;
                         CustomApprovals: Codeunit "CApprovals";
                     begin
-                        Rec.TestField(Status, Rec.Status::Pending);
+                        Rec.TestField("Approval Status", Rec."Approval Status"::Pending);
                         if not Confirm('Are you sure you want to Cancel this Request for approval?') then
                             exit;
                         VarVariant := Rec;

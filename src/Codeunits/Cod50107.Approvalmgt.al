@@ -22,7 +22,7 @@ codeunit 50107 Approvalmgt
 
     procedure isSeminarListWorkflowEnabled(var SeminarList: Record SeminarRegistrationHeader): Boolean
     begin
-        if SeminarList.Status <> SeminarList.Status::Open then exit(false);
+        if SeminarList.Status <> SeminarList."Approval Status"::Open then exit(false);
 
     end;
 
