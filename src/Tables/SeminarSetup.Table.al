@@ -10,21 +10,21 @@ table 50101 "Seminar Setup"
     {
         field(50100; "Primary Key"; Code[10])
         {
-            DataClassification = tobeclassified;
+            Caption = 'Primary key';
         }
         field(50102; "Seminar Nos."; Code[10])
         {
-            DataClassification = tobeclassified;
+            Caption = 'Seminar No.';
             TableRelation = "No. Series";
         }
         field(50101; "Seminar Registration Nos."; Code[10])
         {
-            DataClassification = ToBeClassified;
+            Caption = 'Seminar Registration No.';
             TableRelation = "No. Series";
         }
         field(50103; "Posted Seminar Reg. Nos."; Code[10])
         {
-            DataClassification = ToBeClassified;
+            Caption = 'Posted Seminar Registration No.';
             TableRelation = "No. Series";
         }
     }

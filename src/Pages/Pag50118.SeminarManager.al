@@ -15,7 +15,7 @@ page 50118 "Seminar Manager Role Center"
             {
                 ApplicationArea = Service;
             }
-            part(Name; "seminar Cue")
+            part(Name; "Seminar Details")
             {
                 ApplicationArea = Suite;
             }

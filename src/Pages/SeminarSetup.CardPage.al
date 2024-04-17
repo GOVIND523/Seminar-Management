@@ -5,12 +5,13 @@
 
 page 50103 "Seminar Setup"
 {
-    ApplicationArea = All;
+    ApplicationArea = Basic, Suite;
     Caption = 'Seminar Setup';
     PageType = Card;
+    DeleteAllowed = false;
+    InsertAllowed = false;
     SourceTable = "Seminar Setup";
     UsageCategory = Administration;
-
     layout
     {
         area(content)
@@ -34,12 +35,6 @@ page 50103 "Seminar Setup"
             }
         }
     }
-
-    trigger OnOpenPage()
-    begin
-        if not rec.findfirst then
-            rec.Insert();
-    end;
 }
 
 

@@ -64,8 +64,8 @@ End Function
   <DataSets>
     <DataSet Name="DataSet_Result">
       <Fields>
-        <Field Name="Approval_Status">
-          <DataField>Approval_Status</DataField>
+        <Field Name="ApprovalStatus">
+          <DataField>ApprovalStatus</DataField>
         </Field>
         <Field Name="Comment">
           <DataField>Comment</DataField>

@@ -1,7 +1,6 @@
-page 50119 "seminar Cue"
+page 50119 "Seminar Details"
 {
     ApplicationArea = All;
-    Caption = 'seminar Cue';
     PageType = CardPart;
     RefreshOnActivate = true;
     SourceTable = "Seminar Cue";
@@ -12,8 +11,7 @@ page 50119 "seminar Cue"
         {
             cuegroup(General)
             {
-                Caption = 'Seminar Registration';
-
+                Caption = 'Seminars Registrations';
                 field("Open Registration"; Rec."Open Registration")
                 {
                     ToolTip = 'Specifies the value of the Open Registration field.';

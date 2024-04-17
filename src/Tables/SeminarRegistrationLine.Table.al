@@ -191,7 +191,7 @@ table 50104 SeminarRegistrationLine
     trigger OnInsert()
     begin
         GetSeminarRegHeader;
-        if SeminarRegHeader."Avaiable Bookings" = 0 then
+        if SeminarRegHeader."Total Bookings" = SeminarRegHeader."Maximum Participants" then
             Error(ErrorOnNoAvailibility, "Seminar No.", SeminarRegHeader."Seminar Name");
 
         "Registration Date" := WORKDATE;
