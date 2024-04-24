@@ -1,19 +1,18 @@
 // SME1.00 - 2024-04-17 - Govind
-//   Chapter 4 - Lab 5
-//     - SeminarPostReg Listpage created
+//   Chapter 4 - Lab 2
+//     - PostedSeminarReg Listpage created
+//     - Added action to view realated comment lines and charges
 
-page 50120 "Posted Reg List"
+page 50113 PostedSeminarRegList
 {
     ApplicationArea = All;
-    Caption = 'Posted Reg List';
+    Caption = 'Posted Seminar Registration List';
     PageType = List;
-    SourceTable = SeminarRegistrationHeader;
-    SourceTableView = where(Posted = filter(true));
+    SourceTable = PostedSeminarRegHeader;
     UsageCategory = Lists;
-    InsertAllowed = false;
-    ModifyAllowed = false;
-    PromotedActionCategories = 'New,Process,Report,Request Approval,Approvals,';
+    Editable = false;
     CardPageId = PostedSeminarRegistration;
+
     layout
     {
         area(content)
@@ -40,6 +39,10 @@ page 50120 "Posted Reg List"
                 {
                     ApplicationArea = All;
                 }
+                field(Approval_Status; Rec."Approval Status")
+                {
+                    ApplicationArea = All;
+                }
                 field(Duration; Rec.Duration)
                 {
                     ApplicationArea = All;
@@ -48,7 +51,7 @@ page 50120 "Posted Reg List"
                 {
                     ApplicationArea = All;
                 }
-                field("Room Code"; Rec."Room Resource No.")
+                field("Room Code."; Rec."Room Resource No.")
                 {
                     ApplicationArea = All;
                 }
@@ -70,12 +73,8 @@ page 50120 "Posted Reg List"
             {
                 ApplicationArea = Notes;
             }
-
         }
-
     }
-
-
     actions
     {
         area(Navigation)
@@ -89,39 +88,36 @@ page 50120 "Posted Reg List"
                     Image = Comment;
                     RunObject = page SeminarCommentSheet;
                     RunPageLink = "No." = field("No.");
-                    RunPageView = where("Document Type" = const("Seminar Registration"));
+                    RunPageView = where("Document Type" = const("Posted Seminar Registration"));
                 }
                 action("&Charges")
                 {
                     ApplicationArea = All;
                     Caption = '&Charges';
                     Image = Cost;
-                    RunObject = page SeminarCharges;
+                    RunObject = page PostedSeminarCharges;
                     RunPageLink = "Document No." = field("No.");
                 }
-
             }
         }
+        //     area(Processing)
+        //     {
+        //         action("&Navigate")
+        //         {
+        //             Image = Navigate;
+        //             Promoted = true;
+        //             PromotedCategory = Process;
+        //             ApplicationArea = All;
 
-        area(Processing)
-        {
-            group(Posting)
-            {
-                Image = Post;
-                Caption = 'Posting';
-
-                action("P&ost")
-                {
-                    Caption = 'P&ost';
-                    ApplicationArea = All;
-                    Image = PostDocument;
-                    Promoted = true;
-                    RunObject = codeunit SeminarPostYesNo;
-                }
-
-            }
-        }
-
-
+        //             trigger OnAction()
+        //             begin
+        //                 Navigate.SetDoc(Rec."Posting Date", Rec."No.");
+        //                 Navigate.Run();
+        //             end;
+        //         }
+        //     }
     }
+
+    var
+        Navigate: Page Navigate;
 }

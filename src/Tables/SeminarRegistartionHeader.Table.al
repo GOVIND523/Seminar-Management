@@ -13,6 +13,7 @@ table 50103 SeminarRegistrationHeader
     Caption = 'Seminar Registration Header';
     DataClassification = CustomerContent;
     LookupPageId = SeminarRegistrationList;
+    DataCaptionFields = "No.", "Seminar Name", "Instructor Name", "Room Name";
 
     fields
     {
@@ -43,7 +44,7 @@ table 50103 SeminarRegistrationHeader
             var
             begin
                 if "Starting Date" <> xRec."Starting Date" then
-                    TestField(Status, Status::Planning);
+                    TestField("Seminar registartion Status", SeminarRegistrationStatus::Planning);
                 if ("Starting Date" <> 0DT) AND ("Seminar No." <> '') THEN begin
                     "End Time" := "Starting Date" + (Duration * 3600000);
                     Message(Format("End Time" - "Starting Date"));
@@ -108,9 +109,9 @@ table 50103 SeminarRegistrationHeader
             CalcFormula = lookup(Resource."No." where("No." = field("Instructor Resource No.")));
 
         }
-        field(7; "Approval Status"; Enum ApprovalStatus)
+        field(7; "Seminar registartion Status"; Enum SeminarRegistrationStatus)
         {
-            Caption = 'Approval Status';
+            Caption = 'Seminar registartion Status';
             DataClassification = CustomerContent;
         }
         field(8; Duration; Decimal)
@@ -235,7 +236,7 @@ table 50103 SeminarRegistrationHeader
             DataClassification = CustomerContent;
             trigger OnValidate()
             begin
-                if ("Seminar Price" <> xrec."Seminar Price") and ("Status" <> "Status"::Cancelled) then begin
+                if ("Seminar Price" <> xrec."Seminar Price") and ("Seminar registartion Status" <> "Seminar registartion Status"::Cancelled) then begin
                     SeminarRegLine.Reset();
                     SeminarRegLine.SetRange("Document No.", "No.");
                     SeminarRegLine.SetRange(Registered, false);
@@ -294,33 +295,9 @@ table 50103 SeminarRegistrationHeader
             Caption = 'Posting No. Series';
             DataClassification = CustomerContent;
             TableRelation = "No. Series";
-
-            trigger OnValidate()
-            begin
-                if "Posting No. Series" = '' then
-                    exit;
-                TestField("Posting No.", '');
-
-                SeminarSetup.Get();
-                SeminarSetup.TestField("Seminar Registration Nos.");
-                SeminarSetup.TestField("Posted Seminar Reg. Nos.");
-                NoSeries.TestAreRelated(SeminarSetup."Posted Seminar Reg. Nos.", "Posting No. Series");
-            end;
-
-            trigger OnLookup()
-            begin
-                SeminarRegHeader := Rec;
-                SeminarSetup.Get();
-                SeminarSetup.TestField("Seminar Registration Nos.");
-                SeminarSetup.TestField("Posted Seminar Reg. Nos.");
-                if NoSeries.LookupRelatedNoSeries(SeminarSetup."Posted Seminar Reg. Nos.", "Posting No. Series") then
-                    Validate("Posting No. Series");
-                Rec := SeminarRegHeader;
-            end;
         }
         field(28; "Posting No."; Code[20])
         {
-            Caption = 'Posting No.';
             DataClassification = CustomerContent;
         }
         field(29; "Ending Date"; Date)
@@ -328,9 +305,9 @@ table 50103 SeminarRegistrationHeader
             Caption = 'Ending Date';
         }
 
-        field(40; Status; Enum SeminarRegistrationStatus)
+        field(40; "Approval Status"; Enum ApprovalStatus)
         {
-            Caption = 'Status';
+            Caption = 'Approval Status';
         }
         field(41; No_Printed; Integer)
         {
@@ -407,16 +384,14 @@ table 50103 SeminarRegistrationHeader
         END;
         InitRecord;
 
-        // if GetFilter("Seminar No.") = '' then
-        //     exit;
-
-        // IF GetRangeMin("Seminar No.") = GetRangeMax("Seminar No.") THEN
-        //     Validate("Seminar No.", GetRangeMin("Seminar No."));
+        if GetFilter("Seminar No.") <> '' then
+            IF GetRangeMin("Seminar No.") = GetRangeMax("Seminar No.") THEN
+                Validate("Seminar No.", GetRangeMin("Seminar No."));
     end;
 
     trigger OnDelete()
     begin
-        TestField(Status, Status::Cancelled);
+        TestField("Seminar registartion Status", SeminarRegistrationStatus::Cancelled);
 
         SeminarRegLine.RESET;
         SeminarRegLine.SETRANGE("Document No.", "No.");
@@ -446,10 +421,11 @@ table 50103 SeminarRegistrationHeader
             "Posting Date" := WorkDate();
 
         "Document Date" := WorkDate();
-
         SeminarSetup.Get();
         SeminarSetup.TestField("Posted Seminar Reg. Nos.");
-        "Posting No. Series" := NoSeries.GetNextNo(SeminarSetup."Posted Seminar Reg. Nos.");
+        "Posting No. Series" := SeminarSetup."Posted Seminar Reg. Nos.";
+        "Posting No." := NoSeries.GetNextNo("Posting No. Series");
+
     end;
 
     procedure AssistEdit(OldSeminarRegHeader: Record SeminarRegistrationHeader): Boolean

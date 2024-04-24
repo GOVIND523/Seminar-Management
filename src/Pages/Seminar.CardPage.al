@@ -8,6 +8,10 @@
 //   Chapter 3 - Lab 1
 //     - Added Available seats field
 
+// SME1.00 - 2024-04-24 - Govind
+//   Chapter 5 - Lab 1
+//     - Added actions
+
 page 50104 "Seminar card"
 {
     ApplicationArea = All;
@@ -111,10 +115,37 @@ page 50104 "Seminar card"
 
     actions
     {
+        area(Creation)
+        {
+            action(NewDocumentsItems)
+            {
+                Caption = 'New Registration';
+                ApplicationArea = all;
+                RunPageMode = Create;
+                Image = NewTimesheet;
+                Promoted = true;
+                PromotedCategory = New;
+                PromotedIsBig = true;
+                RunObject = Page SeminarRegistration;
+                RunPageLink = "Seminar No." = field("No.");
+            }
+        }
         area(Processing)
         {
             group("&Seminar")
             {
+                action(LedgerEntries)
+                {
+                    Caption = 'Ledger Entries';
+                    image = WarrantyLedger;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+                    ShortcutKey = 'Ctrl + f7';
+                    Promoted = true;
+                    RunObject = page SeminarLedgerEntries;
+                    RunPageLink = "Seminar No." = field("No.");
+                }
+
                 action("Co&mments")
                 {
                     ApplicationArea = All;
@@ -125,6 +156,19 @@ page 50104 "Seminar card"
                     Image = Comment;
                     RunObject = page "Comment Sheet";
                     RunPageLink = "Table Name" = const(Seminar), "No." = field("No.");
+                }
+            }
+
+            group("Registartions")
+            {
+                action("&Registartions")
+                {
+                    Caption = '&Registrations';
+                    Image = Timesheet;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    RunObject = Page SeminarRegistrationList;
+                    RunPageLink = "Seminar No." = field("No.");
                 }
             }
         }

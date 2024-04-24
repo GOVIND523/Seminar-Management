@@ -1,19 +1,20 @@
 // SME1.00 - 2024-04-17 - Govind
 //   Chapter 4 - Lab 5
-//     - SeminarPostReg Listpage created
+//     - SeminarRegistartion Listpage created
 
-page 50120 "Posted Reg List"
+// SME1.00 - 2024-04-18 - Govind
+//   Chapter 4 - Lab 5
+//     - Added posting action
+page 50108 SeminarRegistrationList
 {
     ApplicationArea = All;
-    Caption = 'Posted Reg List';
+    Caption = 'Seminar Registration List';
     PageType = List;
     SourceTable = SeminarRegistrationHeader;
-    SourceTableView = where(Posted = filter(true));
     UsageCategory = Lists;
-    InsertAllowed = false;
-    ModifyAllowed = false;
-    PromotedActionCategories = 'New,Process,Report,Request Approval,Approvals,';
-    CardPageId = PostedSeminarRegistration;
+    Editable = false;
+    CardPageId = SeminarRegistration;
+
     layout
     {
         area(content)
@@ -36,7 +37,7 @@ page 50120 "Posted Reg List"
                 {
                     ApplicationArea = All;
                 }
-                field(Status; Rec."Seminar registartion Status")
+                field(Status; Rec."Approval Status")
                 {
                     ApplicationArea = All;
                 }
@@ -99,7 +100,6 @@ page 50120 "Posted Reg List"
                     RunObject = page SeminarCharges;
                     RunPageLink = "Document No." = field("No.");
                 }
-
             }
         }
 
@@ -118,10 +118,7 @@ page 50120 "Posted Reg List"
                     Promoted = true;
                     RunObject = codeunit SeminarPostYesNo;
                 }
-
             }
         }
-
-
     }
 }

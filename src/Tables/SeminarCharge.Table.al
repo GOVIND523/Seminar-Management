@@ -115,7 +115,7 @@ table 50105 Seminarcharge
         {
             Caption = 'Bill-to Customer No.';
             DataClassification = CustomerContent;
-            TableRelation = Seminar;
+            TableRelation = contact;
         }
         field(11; "Unit of Measure Code"; Code[10])
         {

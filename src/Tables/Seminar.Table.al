@@ -10,6 +10,7 @@
 // SME1.00 - 2024-04-17 - Govind
 //   Chapter 3 - Lab 1
 //     -- Adding a flowfield for maintaining booked seats for the seminar 
+
 table 50102 Seminar
 {
     Caption = 'Seminar';
@@ -128,9 +129,7 @@ table 50102 Seminar
         field(50113; "Total Booking"; Integer)
         {
             Caption = 'Total Bookings';
-            FieldClass = FlowField;
             Editable = false;
-            CalcFormula = count(SeminarRegistrationLine where("Seminar No." = field("No.")));
         }
     }
 

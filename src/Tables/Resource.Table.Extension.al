@@ -1,6 +1,7 @@
 // SME1.00 - 2024-04-16 - Govind
 //   Chapter 2 - Lab 1
 //     - Add fields to the resource table 
+
 tableextension 50100 "Resouce Extension" extends Resource
 {
     fields

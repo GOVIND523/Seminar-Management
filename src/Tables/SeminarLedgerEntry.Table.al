@@ -170,6 +170,7 @@ table 50112 SeminarLedgerEntry
         {
             Clustered = true;
         }
-        key(Index01; "Document No.", "Posting Date") { }
+        key(Index01; "Document No.", "Posting Date")
+        { }
     }
 }

@@ -189,10 +189,16 @@ table 50104 SeminarRegistrationLine
     }
 
     trigger OnInsert()
+    var
+        Seminar: Record Seminar;
     begin
         GetSeminarRegHeader;
         if SeminarRegHeader."Total Bookings" = SeminarRegHeader."Maximum Participants" then
             Error(ErrorOnNoAvailibility, "Seminar No.", SeminarRegHeader."Seminar Name");
+
+        Seminar.Get(SeminarRegHeader."Seminar No.");
+        Seminar."Total Booking" += 1;
+        Seminar.Modify;
 
         "Registration Date" := WORKDATE;
         "Seminar Price" := SeminarRegHeader."Seminar Price";
