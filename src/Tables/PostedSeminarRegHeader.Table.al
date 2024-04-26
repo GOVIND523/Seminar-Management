@@ -41,7 +41,8 @@ table 50107 PostedSeminarRegHeader
         field(6; "Instructor Name"; Text[100])
         {
             Caption = 'Instructor Name';
-            DataClassification = CustomerContent;
+            FieldClass = FlowField;
+            CalcFormula = lookup(Resource."Name" where("No." = field("Instructor Resource No.")));
         }
         field(7; "Seminar registartion Status"; Enum SeminarRegistrationStatus)
         {
@@ -223,5 +224,8 @@ table 50107 PostedSeminarRegHeader
             SumIndexFields = Duration;
         }
     }
+
+    var
+        resource: Record Resource;
 
 }

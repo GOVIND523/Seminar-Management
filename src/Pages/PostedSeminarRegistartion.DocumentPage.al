@@ -169,8 +169,23 @@ page 50112 PostedSeminarRegistration
 
     actions
     {
-        area(Navigation)
+        area(Processing)
         {
+            action("&Navigate")
+            {
+                Image = Navigate;
+                Promoted = true;
+                PromotedCategory = Process;
+                ApplicationArea = All;
+
+                trigger OnAction()
+                begin
+                    Navigate.SetDoc(Rec."Posting Date", Rec."No.");
+                    Navigate.Run();
+                end;
+            }
+
+
             group("&Seminar Registration")
             {
                 action("Co&mments")
@@ -190,24 +205,9 @@ page 50112 PostedSeminarRegistration
                     RunObject = page PostedSeminarCharges;
                     RunPageLink = "Document No." = field("No.");
                 }
-            }
-        }
 
-        area(Processing)
-        {
-            action("&Navigate")
-            {
-                Image = Navigate;
-                Promoted = true;
-                PromotedCategory = Process;
-                ApplicationArea = All;
-
-                trigger OnAction()
-                begin
-                    Navigate.SetDoc(Rec."Posting Date", Rec."No.");
-                    Navigate.Run();
-                end;
             }
+
             //     action("Print report")
             //     {
             //         ApplicationArea = Basic;

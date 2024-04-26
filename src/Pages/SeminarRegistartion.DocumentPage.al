@@ -209,31 +209,23 @@ page 50105 SeminarRegistration
 
     actions
     {
-
-
-
         area(Processing)
         {
-            group(Posting)
+            action("Post")
             {
-                Image = Post;
-                Caption = 'Posting';
-
-                action("Post")
-                {
-                    Caption = 'Post';
-                    ApplicationArea = All;
-                    Image = PostDocument;
-                    Promoted = true;
-                    PromotedCategory = Process;
-                    PromotedIsBig = true;
-                    RunObject = codeunit SeminarPostYesNo;
-                    trigger OnAction()
-                    begin
-                        CurrPage.Close();
-                    end;
-                }
+                Caption = 'Post';
+                ApplicationArea = All;
+                Image = PostDocument;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                RunObject = codeunit SeminarPostYesNo;
+                trigger OnAction()
+                begin
+                    CurrPage.Close();
+                end;
             }
+
             action("Comments")
             {
                 ApplicationArea = All;
@@ -246,7 +238,7 @@ page 50105 SeminarRegistration
                 RunPageLink = "No." = field("No.");
                 RunPageView = where("Document Type" = const("Seminar Registration"));
             }
-            action("&Charges")
+            action("Charges")
             {
                 ApplicationArea = All;
                 Caption = '&Charges';
@@ -257,8 +249,20 @@ page 50105 SeminarRegistration
                 RunObject = page SeminarCharges;
                 RunPageLink = "Document No." = field("No.");
             }
+            action(Print)
+            {
+                ApplicationArea = All;
+                Caption = 'Print', comment = 'NLB=""';
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                Image = PrintReport;
 
+                trigger OnAction()
+                begin
 
+                end;
+            }
         }
     }
 }

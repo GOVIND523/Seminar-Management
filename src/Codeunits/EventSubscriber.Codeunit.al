@@ -2,6 +2,7 @@
 //   Chapter 5 - Lab 1
 //     - Seminar EventSubscriber Codeunit created
 //     - Added Eventsubscriber for events on navigate 
+
 codeunit 50120 EventSubscriber
 {
     [EventSubscriber(ObjectType::Page, Page::Navigate, 'OnAfterNavigateFindRecords', '', true, true)]

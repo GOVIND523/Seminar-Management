@@ -8,6 +8,10 @@
 //   Chapter 3 - Lab 1 Additional
 //     -- added the available seats field as a flowfield
 
+// SME1.00 - 2024-04-24 - Govind
+//   Chapter 6 - Lab 1
+//     - Added a field "No printed" 
+
 table 50103 SeminarRegistrationHeader
 {
     Caption = 'Seminar Registration Header';
