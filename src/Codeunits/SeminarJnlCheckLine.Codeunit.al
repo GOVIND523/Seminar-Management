@@ -14,6 +14,9 @@ codeunit 50111 SeminarJnlCheckLine
 
     //run check for field validation as per the cases 
     procedure RunCheck(var SemJnlLine: Record SeminarJournalLine)
+    var
+        tableID: array[10] of Integer;
+        No: array[10] of Code[20];
     begin
         If SemJnlLine.EmptyLine() then
             exit;
@@ -35,6 +38,21 @@ codeunit 50111 SeminarJnlCheckLine
             SemJnlLine.TestField("Bill-to Customer No.");
 
         CheckDates(SemJnlLine);
+        IF NOT DimensionMgt.CheckDimIDComb(SemJnlLine."Dimension Set ID") THEN
+            ERROR(Text002, SemJnlLine.TABLECAPTION, SemJnlLine."Journal Template Name", SemJnlLine."Journal Batch Name", SemJnlLine."Line No.", DimensionMgt.GetDimCombErr);
+       
+       
+        No[1] := SemJnlLine."Seminar No.";
+        TableID[2] := DATABASE::Resource;
+        No[2] := SemJnlLine."Instructor Code";
+        TableID[3] := DATABASE::Resource;
+        No[3] := SemJnlLine."Room Code.";
+        // IF NOT DimensionMgt.CheckDimValuePosting(TableID, No, SemJnlLine."Dimension Set ID") THEN
+        // IF "Line No." <> 0 THEN
+        //     ERROR(Text003, TABLECAPTION, "Journal Template Name", "Journal Batch Name", "Line No.", DimensionMgt.GetDimValuePostingErr)
+        // ELSE
+        //     ERROR(DimensionMgt.GetDimValuePostingErr)
+
     end;
 
     //check if the posting date is the closing date or not
@@ -65,12 +83,22 @@ codeunit 50111 SeminarJnlCheckLine
                 SemJnlLine.FieldError("Document Date", TEXT001);
     end;
 
+
+    local procedure CheckDimIDComb()
+    begin
+
+    end;
+
+
     var
+        DimensionMgt: Codeunit DimensionManagement;
         GLSetup: Record "General Ledger Setup";
         UserSetup: Record "User Setup";
         AllowPostingFrom: Date;
         AllowPostingTo: Date;
         TEXT001: Label 'cannot be a closing date';
         Text000: Label 'is not within your range of allowed posting dates';
+        Text002: Label 'The combination of dimensions used in %1 %2, %3, %4 is blocked. %5';
+        Text003: Label 'A dimension used in %1 %2,%3,$4 has caused an error. %5';
 
 }

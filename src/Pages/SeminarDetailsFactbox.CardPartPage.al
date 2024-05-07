@@ -24,10 +24,6 @@ page 50109 SeminarDetailsFactbox
                 {
                     ApplicationArea = All;
                 }
-                field("Seminar Duration"; Rec."Seminar Duration")
-                {
-                    ApplicationArea = All;
-                }
                 field("Minimum Participants"; Rec."Minimum Participants")
                 {
                     ApplicationArea = All;

@@ -44,6 +44,34 @@ codeunit 50120 EventSubscriber
         end;
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::DimensionManagement, 'OnAfterSetSourceCodeWithVar', '', false, false)]
+    local procedure AddSourceCode(TableID: Integer; RecordVar: Variant; var SourceCode: Code[10])
+    var
+        SourceCodeSetup: Record "Source Code Setup";
+    begin
+        if TableID = database::Seminar then begin
+            SourceCode := SourceCodeSetup.Seminar;
+        end;
+    end;
+
+    [EventSubscriber(ObjectType::Table, 352, OnAfterUpdateGlobalDimCode, '', false, false)]
+    local procedure UpdateSeminarGlobalDimCode(TableID: Integer)
+    var
+        GlobalDimCodeNo: Integer;
+        SeminarNo: Code[20];
+        NewDimValue: Code[20];
+        Seminar: Record Seminar;
+    begin
+        if TableID = Database::Seminar then
+            if seminar.get(SeminarNo) then begin
+                case GlobalDimCodeNo of
+                    1:
+                        Seminar."Global Dimension Code 1" := NewDimValue;
+                    2:
+                        Seminar."Global Dimension Code 2" := NewDimValue;
+                end;
+            end;
+    end;
 
     var
         PostedSeminarRegHeader: Record PostedSeminarRegHeader;

@@ -11,6 +11,12 @@
 //   Chapter 3 - Lab 1
 //     -- Adding a flowfield for maintaining booked seats for the seminar 
 
+// SME1.00 - 2024-04-29 - Govind
+//   Chapter 8 - Lab 1
+//     - Added procedure ValidateShortcutDimCode
+//     - Added fields GlobalDimensionCode1 and GlobalDImensionCode2 
+
+
 table 50102 Seminar
 {
     Caption = 'Seminar';
@@ -33,7 +39,7 @@ table 50102 Seminar
             end;
         }
 
-        field(50101; "Name"; Text[50])
+        field(50101; "Name"; Text[150])
         {
             Caption = 'Name';
             DataClassification = ToBeClassified;
@@ -44,17 +50,16 @@ table 50102 Seminar
             end;
         }
 
-        field(50102; "Seminar Duration"; Decimal)
-        {
-            Caption = 'Seminar Duration';
-            DataClassification = ToBeClassified;
-            DecimalPlaces = 0 : 1;
-        }
 
         field(50103; "Minimum Participants"; Integer)
         {
             Caption = 'Minimum Participants';
             DataClassification = ToBeClassified;
+            trigger OnValidate()
+            begin
+                if "Minimum Participants" > "Maximum Participants" then
+                    Error('Minimum participants must be less than maximum participants.!!');
+            end;
         }
 
         field(50104; "Maximum Participants"; Integer)
@@ -96,7 +101,11 @@ table 50102 Seminar
             DataClassification = ToBeClassified;
             AutoFormatType = 1;
         }
-
+        field(7; "Seminar registartion Status"; Enum SeminarRegistrationStatus)
+        {
+            Caption = 'Seminar registartion Status';
+            DataClassification = CustomerContent;
+        }
         field(50110; "Gen. Prod. Posting Group"; Code[10])
         {
             Caption = 'Gen. prod. Posting Group';
@@ -131,6 +140,52 @@ table 50102 Seminar
             Caption = 'Total Bookings';
             Editable = false;
         }
+
+        field(50114; "Date Filter"; Date)
+        {
+            Caption = 'Date Filter';
+            FieldClass = FlowFilter;
+        }
+
+        field(50115; "Charge Type Filter"; Enum SeminarChargeType)
+        {
+            Caption = 'Charge Type Filter';
+            FieldClass = FlowFilter;
+        }
+
+        field(50116; "Total Price"; Decimal)
+        {
+            Caption = 'Total Price';
+            FieldClass = FlowField;
+            Editable = false;
+            CalcFormula = sum(SeminarLedgerEntry."Total Price" where("Seminar No." = field("No."), "Posting Date" = field("Date Filter"), "Charge Type" = field("Charge Type Filter")));
+        }
+
+        field(50117; "Total Price(Not Chargable)"; Decimal)
+        {
+            Caption = 'Total Price(Not Chargable))';
+            FieldClass = FlowField;
+            Editable = false;
+            CalcFormula = sum(SeminarLedgerEntry."Total Price" where("Seminar No." = field("No."), "Posting Date" = field("Date Filter")));
+            ;
+        }
+        field(50118; "Total Price(Chargable)"; Decimal)
+        {
+            Caption = 'Total Price(Chargable)';
+            FieldClass = FlowField;
+            Editable = false;
+            CalcFormula = sum(SeminarLedgerEntry."Total Price" where("Seminar No." = field("No."), "Posting Date" = field("Date Filter")));
+        }
+        field(50119; "Global Dimension Code 1"; Code[20])
+        {
+            CaptionClass = '1,1,1';
+            TableRelation = "Dimension Value".code where("Global Dimension No." = const(1));
+        }
+        field(50120; "Global Dimension Code 2"; Code[20])
+        {
+            CaptionClass = '1,1,2';
+            TableRelation = "Dimension Value".Code where("Global Dimension No." = const(2));
+        }
     }
 
     keys
@@ -149,6 +204,10 @@ table 50102 Seminar
         SeminarRec: Record Seminar;
         GenProPostingRec: Record "Gen. Product Posting Group";
         NoSeries: Codeunit "No. Series";
+        DimensionMgt: Codeunit DimensionManagement;
+        defdim: Record "Default Dimension";
+        SeminarRegHeader: Record SeminarRegistrationHeader;
+        semRegLine: Record SeminarRegistrationLine;
 
     trigger OnInsert()
     begin
@@ -157,11 +216,24 @@ table 50102 Seminar
             SeminarSetupRec.TestField("Seminar Nos.");
             "No." := NoSeries.GetNextNo(SeminarSetupRec."Seminar Nos.");
         end;
+
+        DimensionMgt.UpdateDefaultDim(Database::Seminar, "No.", "Global Dimension Code 1", "Global Dimension Code 2");
     end;
 
     trigger OnModify()
     begin
         Rec."Last Date Modified" := Today;
+        if SeminarRegHeader.FindFirst then begin
+            SeminarRegHeader.SetRange("No.");
+            SeminarRegHeader."Seminar Name" := Name;
+            SeminarRegHeader."Seminar registartion Status" := "Seminar registartion Status";
+            SeminarRegHeader."Maximum Participants" := "Maximum Participants";
+            SeminarRegHeader."Minimum Participants" := "Minimum Participants";
+            SeminarRegHeader."Gen. Prod. Posting Group" := "Gen. Prod. Posting Group";
+            SeminarRegHeader."VAT Prod. Posting Group" := "VAT Prod. Posting Group";
+            SeminarRegHeader."Seminar Price" := "Seminar Price";
+            SeminarRegHeader.Modify;
+        end;
     end;
 
     trigger OnRename()
@@ -175,6 +247,8 @@ table 50102 Seminar
         CommentLineRec.SetRange("Table Name", CommentLineRec."Table Name"::Seminar);
         CommentLineRec.SetRange("No.", "No.");
         CommentLineRec.DeleteAll();
+
+        DimensionMgt.DeleteDefaultDim(Database::Seminar, "No.");
     end;
 
 
@@ -188,5 +262,12 @@ table 50102 Seminar
             Rec := SeminarRec;
             exit(true);
         end;
+    end;
+
+    procedure ValidateShortcutDimCode(FieldNumber: Integer; var ShortCutDimCode: Code[20])
+    begin
+        DimensionMgt.ValidateDimValueCode(FieldNumber, ShortCutDimCode);
+        DimensionMgt.SaveDefaultDim(Database::Customer, "No.", FieldNumber, ShortCutDimCode);
+        Modify();
     end;
 }

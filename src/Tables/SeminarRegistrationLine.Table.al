@@ -37,6 +37,7 @@ table 50104 SeminarRegistrationLine
             trigger OnValidate()
             begin
                 TestField(Registered, false);
+                CreateDim(Database::Customer, 'Bill-to Customer No.');
             end;
         }
         field(4; "Participant Contact No."; Code[20])
@@ -179,6 +180,32 @@ table 50104 SeminarRegistrationLine
             DataClassification = CustomerContent;
             Editable = false;
         }
+        field(47; "Shortcut Dimension 1 Code"; Code[20])
+        {
+            Caption = 'Shortcut Dimension 1 Code';
+            TableRelation = "Dimension Value".Code where("Global Dimension No." = const(1));
+            trigger OnValidate()
+            begin
+                ValidateShortcutDimCode(1, "Shortcut Dimension 1 Code");
+            end;
+        }
+        field(48; "Shortcut Dimension 2 Code"; Code[20])
+        {
+            Caption = 'Shortcut Dimension 2 Code';
+            TableRelation = "Dimension Value".Code where("Global Dimension No." = const(2));
+            trigger OnValidate()
+            begin
+                ValidateShortcutDimCode(1, "Shortcut Dimension 1 Code");
+            end;
+        }
+        field(480; "Dimension Set ID"; Integer)
+        {
+            Caption = 'Dimension Set ID';
+            trigger OnLookup()
+            begin
+                ShowDimension();
+            end;
+        }
     }
     keys
     {
@@ -213,6 +240,7 @@ table 50104 SeminarRegistrationLine
     var
         GLSetup: Record "General Ledger Setup";
         SeminarRegHeader: Record SeminarRegistrationHeader;
+        DimensionMgt: Codeunit DimensionManagement;
         Contact: Record Contact;
         ContactBusinessRelation: Record "Contact Business Relation";
         ContactHasDifferentCompanyThanCustomer: Label 'Contact %1 %2 is related to a different company than customer %3.';
@@ -238,5 +266,44 @@ table 50104 SeminarRegistrationLine
         GLSetup.GET;
         Amount := ROUND("Seminar Price" - "Line Discount Amount", GLSetup."Amount Rounding Precision");
     END;
+
+    procedure ShowDimension()
+    begin
+        "Dimension Set ID" := DimensionMgt.EditDimensionSet("Dimension Set ID", StrSubstNo('%1 %2', "Document No.", "Line No."));
+        DimensionMgt.UpdateGlobalDimFromDimSetID("Dimension Set ID", "Shortcut Dimension 1 Code", "Shortcut Dimension 2 Code");
+    end;
+
+    local procedure CreateDim(type1: Integer; no1: Code[20])
+    var
+        SourceCodeSetup: Record "Source Code Setup";
+        TableID: array[2] of Integer;
+        No: array[2] of Code[20];
+        DimSource: List of [Dictionary of [Integer, Code[20]]];
+
+    begin
+        SourceCodeSetup.Get();
+        DimensionMgt.AddDimSource(DimSource, Type1, No1);
+        "Shortcut Dimension 1 Code" := '';
+        "Shortcut Dimension 2 Code" := '';
+        GetSeminarRegHeader();
+        "Dimension Set ID" := DimensionMgt.GetRecDefaultDimID(Rec, CurrFieldNo, DimSource, SourceCodeSetup.Sales, "Shortcut Dimension 1 Code", "Shortcut Dimension 2 Code", 0, 0);
+        DimensionMgt.UpdateGlobalDimFromDimSetID("Dimension Set ID", "Shortcut Dimension 1 Code", "Shortcut Dimension 2 Code");
+    end;
+
+    procedure ValidateShortcutDimCode(FieldNumber: Integer; Var ShortcutDimCode: Code[20])
+    begin
+        DimensionMgt.ValidateShortcutDimValues(FieldNumber, ShortcutDimCode, "Dimension Set ID");
+    end;
+
+    local procedure LookupShortCutDimCode(FieldNumber: Integer; Var ShortcutDimCode: Code[20])
+    begin
+        DimensionMgt.LookupDimValueCode(FieldNumber, ShortcutDimCode);
+        ValidateShortcutDimCode(FieldNumber, ShortcutDimCode);
+    end;
+
+     procedure ShowShortcutDimCode(Var ShortCutDimCode: array[8] of Code[20])
+    begin
+        DimensionMgt.GetShortcutDimensions("Dimension Set ID", ShortCutDimCode);
+    end;
 }
 

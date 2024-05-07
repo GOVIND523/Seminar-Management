@@ -127,5 +127,5 @@ report 50101 RegParticipants
     }
     var
         CompanyInfo: Record "Company Information";
-        NoPrinted: Codeunit SeminarRegPrinted;
+        NoPrinted: Codeunit "Seminar Registartion Printed";
 }

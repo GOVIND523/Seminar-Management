@@ -172,29 +172,6 @@ codeunit 50102 SeminarPost
         END;
     END;
 
-    LOCAL PROCEDURE PostResJnlLine(Resource: Record Resource): Integer
-    BEGIN
-        Resource.TESTFIELD("Quantity Per Day");
-        ResJnlLine.INIT;
-        ResJnlLine."Entry Type" := ResJnlLine."Entry Type"::Usage;
-        ResJnlLine."Document No." := PstdSeminarRegHeader."No.";
-        ResJnlLine."Resource No." := Resource."No.";
-        ResJnlLine."Posting Date" := SeminarRegHeader."Posting Date";
-        ResJnlLine."Reason Code" := SeminarRegHeader."Reason Code";
-        ResJnlLine.Description := SeminarRegHeader."Seminar Name";
-        ResJnlLine."Gen. Prod. Posting Group" := SeminarRegHeader."Gen. Prod. Posting Group";
-        ResJnlLine."Posting No. Series" := SeminarRegHeader."Posting No. Series";
-        ResJnlLine."Source Code" := SourceCode;
-        ResJnlLine."Resource No." := Resource."No.";
-        ResJnlLine."Unit of Measure Code" := Resource."Base Unit of Measure";
-        ResJnlLine."Unit Cost" := Resource."Unit Cost";
-        ResJnlLine."Qty. per Unit of Measure" := 1;
-        ResJnlLine.Quantity := SeminarRegHeader.Duration * Resource."Quantity Per Day";
-        ResJnlLine."Total Cost" := ResJnlLine."Unit Cost" * ResJnlLine.Quantity;
-        ResJnlPostLine.RunWithCheck(ResJnlLine);
-        ResLedgEntry.FINDLAST;
-        EXIT(ResLedgEntry."Entry No.");
-    END;
 
     LOCAL PROCEDURE PostSeminarJnlLine(ChargeType: Enum "SeminarJournalChargeType")
     BEGIN
@@ -213,6 +190,7 @@ codeunit 50102 SeminarPost
         SeminarJnlLine."Source Code" := SourceCode;
         SeminarJnlLine."Reason Code" := SeminarRegHeader."Reason Code";
         SeminarJnlLine."Posting No. Series" := SeminarRegHeader."Posting No. Series";
+        SeminarJnlLine."Dimension Set ID" := SeminarRegHeader."Dimension Set ID";
 
         CASE ChargeType OF
             ChargeType::Instructor:
@@ -241,7 +219,7 @@ codeunit 50102 SeminarPost
                     SeminarJnlLine."Participant Contact No." := SeminarRegLine."Participant Contact No.";
                     SeminarJnlLine."Participant Name" := SeminarRegLine."Participant Name";
                     SeminarJnlLine.Description := SeminarRegLine."Participant Name";
-                    SeminarJnlLine.Type := SeminarJnlLine.Type::Resource;
+                    SeminarJnlLine.Type := SeminarJnlLine.Type::"G/L Account";
                     SeminarJnlLine.Chargeable := SeminarRegLine."To Invoice";
                     SeminarJnlLine.Quantity := 1;
                     SeminarJnlLine."Unit Price" := SeminarRegLine.Amount;
@@ -260,6 +238,31 @@ codeunit 50102 SeminarPost
         END;
 
         SeminarJnlPostLine.RunWithCheck(SeminarJnlLine);
+    END;
+
+
+    LOCAL PROCEDURE PostResJnlLine(Resource: Record Resource): Integer
+    BEGIN
+        Resource.TESTFIELD("Quantity Per Day");
+        ResJnlLine.INIT;
+        ResJnlLine."Entry Type" := ResJnlLine."Entry Type"::Usage;
+        ResJnlLine."Document No." := PstdSeminarRegHeader."No.";
+        ResJnlLine."Resource No." := Resource."No.";
+        ResJnlLine."Posting Date" := SeminarRegHeader."Posting Date";
+        ResJnlLine."Reason Code" := SeminarRegHeader."Reason Code";
+        ResJnlLine.Description := SeminarRegHeader."Seminar Name";
+        ResJnlLine."Gen. Prod. Posting Group" := SeminarRegHeader."Gen. Prod. Posting Group";
+        ResJnlLine."Posting No. Series" := SeminarRegHeader."Posting No. Series";
+        ResJnlLine."Source Code" := SourceCode;
+        ResJnlLine."Resource No." := Resource."No.";
+        ResJnlLine."Unit of Measure Code" := Resource."Base Unit of Measure";
+        ResJnlLine."Unit Cost" := Resource."Unit Cost";
+        ResJnlLine."Qty. per Unit of Measure" := 1;
+        ResJnlLine.Quantity := SeminarRegHeader.Duration * Resource."Quantity Per Day";
+        ResJnlLine."Total Cost" := ResJnlLine."Unit Cost" * ResJnlLine.Quantity;
+        ResJnlPostLine.RunWithCheck(ResJnlLine);
+        ResLedgEntry.FINDLAST;
+        EXIT(ResLedgEntry."Entry No.");
     END;
 
     local procedure PostCharges()

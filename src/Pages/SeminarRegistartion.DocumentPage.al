@@ -33,12 +33,8 @@ page 50105 SeminarRegistration
                             CurrPage.Update();
                     end;
                 }
-                field("Starting Date"; Rec."Starting Date")
-                {
-                    ToolTip = 'Specifies the seminar starting date.';
-                    ApplicationArea = All;
 
-                }
+
                 field("Seminar No."; Rec."Seminar No.")
                 {
                     ToolTip = 'Specifies the number of the seminar unique for each seminar.';
@@ -74,15 +70,12 @@ page 50105 SeminarRegistration
                 field("Document Status"; Rec."Seminar registartion Status")
                 {
                     ApplicationArea = All;
+                    
                 }
                 field(Approval_Status; Rec."Approval Status")
                 {
                     ApplicationArea = All;
                     Editable = false;
-                }
-                field(Duration; Rec.Duration)
-                {
-                    ApplicationArea = All;
                 }
                 field("Minimum Participants"; Rec."Minimum Participants")
                 {
@@ -94,10 +87,35 @@ page 50105 SeminarRegistration
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("End Time"; Rec."End Time")
+                field("Starting Date"; Rec."Starting Date")
+                {
+                    ToolTip = 'Specifies the seminar starting date.';
+                    ApplicationArea = All;
+                }
+
+                field("Ending Date"; Rec."Ending Date")
+                {
+                    ToolTip = 'Specifies the seminar starting date.';
+                    ApplicationArea = All;
+                }
+                field(NumberofDays; Rec.NumberofDays)
+                {
+                    ApplicationArea = all;
+                    Editable = false;
+                }
+                field(Duration; Rec.Duration)
                 {
                     ApplicationArea = All;
                 }
+                field(FromTime; Rec.FromTime)
+                {
+                    ApplicationArea = all;
+                }
+                field(ToTime; Rec.ToTime)
+                {
+                    ApplicationArea = All;
+                }
+
             }
             part(SeminarRegistrationLines; SeminarRegistrationSubform)
             {
@@ -263,6 +281,24 @@ page 50105 SeminarRegistration
 
                 end;
             }
+            action("Dimensions")
+            {
+                ApplicationArea = All;
+                Caption = 'Dimensions', comment = 'NLB="YourLanguageCaption"';
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                Image = Dimensions;
+                ShortcutKey = 'Shift+ctrl+d';
+                trigger OnAction()
+                begin
+                    Rec.showDocDim;
+                    CurrPage.SaveRecord();
+                end;
+            }
         }
     }
+
+    var
+        MultipleDays: Boolean;
 }

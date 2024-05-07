@@ -79,8 +79,8 @@ End Function
         <Field Name="DurationFormat">
           <DataField>DurationFormat</DataField>
         </Field>
-        <Field Name="EndTime">
-          <DataField>EndTime</DataField>
+        <Field Name="Ending_Date">
+          <DataField>Ending_Date</DataField>
         </Field>
         <Field Name="GenProdPostingGroup">
           <DataField>GenProdPostingGroup</DataField>

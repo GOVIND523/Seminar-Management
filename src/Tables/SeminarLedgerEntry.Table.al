@@ -53,7 +53,7 @@ table 50112 SeminarLedgerEntry
             DataClassification = CustomerContent;
             TableRelation = Customer;
         }
-        field(9; "Charge Type"; Enum "Acc. Schedule Line Totaling Type")
+        field(9; "Charge Type"; Enum SeminarJournalChargeType)
         {
             Caption = 'Charge Type';
             DataClassification = CustomerContent;
@@ -106,7 +106,7 @@ table 50112 SeminarLedgerEntry
             DataClassification = CustomerContent;
             TableRelation = Resource where(Type = const(Person));
         }
-        field(19; "Starting Date"; DateTime)
+        field(19; "Starting Date"; Date)
         {
             Caption = 'Starting Date';
             DataClassification = CustomerContent;
@@ -161,16 +161,35 @@ table 50112 SeminarLedgerEntry
             DataClassification = CustomerContent;
             TableRelation = User;
         }
+        field(50119; "Global Dimension Code 1"; Code[20])
+        {
+            CaptionClass = '1,1,1';
+            TableRelation = "Dimension Value".code where("Global Dimension No." = const(1));
+        }
+        field(50120; "Global Dimension Code 2"; Code[20])
+        {
+            CaptionClass = '1,1,2';
+            TableRelation = "Dimension Value".Code where("Global Dimension No." = const(2));
+        }
+        field(480; "Dimension Set ID"; Integer)
+        {
+            Caption = 'Dimension Set ID';
+        }
     }
 
     keys
     {
-        key(PK;
-        "Entry No.")
+        key(PK; "Entry No.")
         {
             Clustered = true;
         }
         key(Index01; "Document No.", "Posting Date")
         { }
+        key(Sec; "Seminar No.", "Posting Date", "Charge Type", Chargeable)
+        {
+            SumIndexFields = "Total Price";
+        }
     }
+    var
+        cu: codeunit DimensionManagement;
 }

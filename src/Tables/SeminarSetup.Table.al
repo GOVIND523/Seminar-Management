@@ -27,5 +27,7 @@ table 50101 "Seminar Setup"
             Caption = 'Posted Seminar Registration No.';
             TableRelation = "No. Series";
         }
+
+
     }
 }

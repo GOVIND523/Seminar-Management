@@ -16,7 +16,7 @@ table 50107 PostedSeminarRegHeader
             Caption = 'No.';
             DataClassification = CustomerContent;
         }
-        field(2; "Starting Date"; DateTime)
+        field(2; "Starting Date"; Date)
         {
             Caption = 'Starting Date';
             DataClassification = CustomerContent;
@@ -25,7 +25,6 @@ table 50107 PostedSeminarRegHeader
         {
             Caption = 'Seminar No.';
             DataClassification = CustomerContent;
-            TableRelation = Seminar where(Blocked = const(false));
         }
         field(4; "Seminar Name"; Text[100])
         {
@@ -36,22 +35,20 @@ table 50107 PostedSeminarRegHeader
         {
             Caption = 'Instructor Resource No.';
             DataClassification = CustomerContent;
-            TableRelation = Resource where(Type = const(Person));
         }
         field(6; "Instructor Name"; Text[100])
         {
             Caption = 'Instructor Name';
-            FieldClass = FlowField;
-            CalcFormula = lookup(Resource."Name" where("No." = field("Instructor Resource No.")));
+            Editable = false;
         }
         field(7; "Seminar registartion Status"; Enum SeminarRegistrationStatus)
         {
-            Caption = 'Registartion Status';
+            Caption = 'Seminar registartion Status';
             DataClassification = CustomerContent;
         }
         field(8; Duration; Decimal)
         {
-            Caption = 'Duration';
+            Caption = 'Duration (Hours)';
             DataClassification = CustomerContent;
         }
         field(9; "Maximum Participants"; Integer)
@@ -64,12 +61,18 @@ table 50107 PostedSeminarRegHeader
             Caption = 'Minimum Participants';
             DataClassification = CustomerContent;
         }
+        field(50100; "Total Bookings"; Integer)
+        {
+            Caption = 'Total Bookings';
+        }
+        field(50101; "Avaiable Bookings"; Integer)
+        {
+            Caption = 'Available Bookings';
+        }
         field(11; "Room Resource No."; Code[20])
         {
             Caption = 'Room Resource No.';
             DataClassification = CustomerContent;
-            TableRelation = Resource where(Type = const(Machine));
-
         }
         field(12; "Room Name"; Text[100])
         {
@@ -90,9 +93,6 @@ table 50107 PostedSeminarRegHeader
         {
             Caption = 'Room Post Code';
             DataClassification = CustomerContent;
-            TableRelation = "Post Code";
-            ValidateTableRelation = false;
-
         }
         field(16; "Room City"; Text[50])
         {
@@ -157,9 +157,62 @@ table 50107 PostedSeminarRegHeader
         {
             Caption = 'Posting No. Series';
             DataClassification = CustomerContent;
-            TableRelation = "No. Series";
-
         }
+        field(28; "Posting No."; Code[20])
+        {
+            DataClassification = CustomerContent;
+        }
+        field(29; "Ending Date"; Date)
+        {
+            Caption = 'Ending Date';
+        }
+
+        field(40; "Approval Status"; Enum ApprovalStatus)
+        {
+            Caption = 'Approval Status';
+        }
+        field(41; No_Printed; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Editable = false;
+        }
+        field(42; "Total Amount"; Decimal)
+        {
+            Editable = false;
+            DecimalPlaces = 0 : 5;
+        }
+        field(43; "Line Discount"; Decimal)
+        {
+            Editable = false;
+            DecimalPlaces = 0 : 5;
+        }
+        field(44; "Number of Lines"; Integer)
+        {
+            Editable = false;
+        }
+        field(45; "ToTime"; Time)
+        {
+            Caption = 'To Time';
+            DataClassification = ToBeClassified;
+        }
+
+        field(50103; NumberofDays; Integer)
+        {
+            Caption = 'Number of Days';
+            DataClassification = ToBeClassified;
+        }
+        field(50105; FromTime; Time)
+        {
+            Caption = 'From Time';
+            DataClassification = ToBeClassified;
+        }
+
+        field(46; Posted; Boolean)
+        {
+            DataClassification = ToBeClassified;
+            Editable = false;
+        }
+
         field(50111; "User ID"; Text[50])
         {
             DataClassification = CustomerContent;
@@ -176,41 +229,6 @@ table 50107 PostedSeminarRegHeader
         {
             DataClassification = CustomerContent;
             TableRelation = "Source Code";
-        }
-        field(40; "Approval Status"; Enum ApprovalStatus)
-        {
-            Caption = 'Approval Status';
-
-        }
-        field(41; No_Printed; Integer)
-        {
-            DataClassification = ToBeClassified;
-            Editable = false;
-        }
-        field(42; "Total Amount"; Decimal)
-        {
-            Editable = false;
-            DecimalPlaces = 0 : 5;
-            FieldClass = FlowField;
-            CalcFormula = sum(PostedSeminarRegLine.Amount where("Document No." = field("No.")));
-        }
-        field(43; "Line Discount"; Decimal)
-        {
-            FieldClass = FlowField;
-            Editable = false;
-            CalcFormula = sum(PostedSeminarRegLine."Line Discount Amount" where("Document No." = field("No.")));
-        }
-        field(44; "Number of Lines"; Integer)
-        {
-            Editable = false;
-            CalcFormula = count(PostedSeminarRegLine where("Document No." = field("No.")));
-            FieldClass = FlowField;
-
-        }
-        field(45; "End Time"; DateTime)
-        {
-            DataClassification = CustomerContent;
-
         }
     }
     keys

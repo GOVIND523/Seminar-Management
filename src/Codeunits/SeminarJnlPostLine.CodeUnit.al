@@ -99,6 +99,9 @@ codeunit 50110 SeminarJnlPostLine
         SeminarLedgerEntry."No. Series" := SeminarJnlLineToCheck."Posting No. Series";
         SeminarLedgerEntry."User ID" := USERID;
         SeminarLedgerEntry."Entry No." := NextEntryNo;
+        SeminarLedgerEntry."Global Dimension Code 1" := SeminarJnlLineToCheck."Shortcut Dimension 1 Code";
+        SeminarLedgerEntry."Global Dimension Code 2" := SeminarJnlLineToCheck."Shortcut Dimension 2 Code";
+        SeminarLedgerEntry."Dimension Set ID" := SeminarJnlLineToCheck."Dimension Set ID";
         SeminarLedgerEntry.INSERT;
         NextEntryNo := NextEntryNo + 1;
     END;

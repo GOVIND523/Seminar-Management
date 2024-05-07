@@ -14,3 +14,4 @@ codeunit 50121 "Seminar Registartion Printed"
         Commit();
     end;
 }
+ 

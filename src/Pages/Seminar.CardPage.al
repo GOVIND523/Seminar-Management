@@ -63,10 +63,10 @@ page 50104 "Seminar card"
                     ApplicationArea = all;
                     ToolTip = 'Specifies the value of the Search Name field.';
                 }
-                field("Seminar Duration"; Rec."Seminar Duration")
+                field("Seminar registartion Status"; Rec."Seminar registartion Status")
                 {
                     ApplicationArea = all;
-                    ToolTip = 'Specifies the value of the Seminar Duration field.';
+                    ToolTip = 'Seminar registration status';
                 }
                 field(Blocked; Rec.Blocked)
                 {
@@ -117,59 +117,73 @@ page 50104 "Seminar card"
     {
         area(Creation)
         {
-            action(NewDocumentsItems)
-            {
-                Caption = 'New Registration';
-                ApplicationArea = all;
-                RunPageMode = Create;
-                Image = NewTimesheet;
-                Promoted = true;
-                PromotedCategory = New;
-                PromotedIsBig = true;
-                RunObject = Page SeminarRegistration;
-                RunPageLink = "Seminar No." = field("No.");
-            }
+
         }
         area(Processing)
         {
-            group("&Seminar")
-            {
-                action(LedgerEntries)
-                {
-                    Caption = 'Ledger Entries';
-                    image = WarrantyLedger;
-                    PromotedCategory = Process;
-                    PromotedIsBig = true;
-                    ShortcutKey = 'Ctrl + f7';
-                    Promoted = true;
-                    RunObject = page SeminarLedgerEntries;
-                    RunPageLink = "Seminar No." = field("No.");
-                }
 
-                action("Co&mments")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Comments', comment = 'NLB="Comments"';
-                    Promoted = true;
-                    PromotedCategory = Process;
-                    PromotedIsBig = true;
-                    Image = Comment;
-                    RunObject = page "Comment Sheet";
-                    RunPageLink = "Table Name" = const(Seminar), "No." = field("No.");
-                }
+            action(LedgerEntries)
+            {
+                Caption = 'Ledger Entries';
+                image = WarrantyLedger;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                ShortcutKey = 'Ctrl + f7';
+                Promoted = true;
+                RunObject = page SeminarLedgerEntries;
+                RunPageLink = "Seminar No." = field("No.");
             }
 
-            group("Registartions")
+            action("Co&mments")
             {
-                action("&Registartions")
-                {
-                    Caption = '&Registrations';
-                    Image = Timesheet;
-                    Promoted = true;
-                    PromotedCategory = Process;
-                    RunObject = Page SeminarRegistrationList;
-                    RunPageLink = "Seminar No." = field("No.");
-                }
+                ApplicationArea = All;
+                Caption = 'Comments', comment = 'NLB="Comments"';
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                Image = Comment;
+                RunObject = page "Comment Sheet";
+                RunPageLink = "Table Name" = const(Seminar), "No." = field("No.");
+            }
+
+            action("&statistics")
+            {
+                ApplicationArea = all;
+                Caption = 'Statistics';
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                image = Statistics;
+                RunObject = page "SeminarStatictics";
+                RunPageLink = "No." = field("No.");
+            }
+
+            action("&Registartions")
+            {
+                Caption = '&Registrations';
+                Image = Timesheet;
+                Promoted = true;
+                PromotedCategory = Process;
+                RunObject = Page SeminarRegistrationList;
+                RunPageLink = "Seminar No." = field("No.");
+            }
+
+            action("Participants List")
+            {
+                Caption = 'Participants List';
+                Image = List;
+            }
+            action("Dimensions")
+            {
+                ApplicationArea = All;
+                Caption = 'Dimensions', comment = 'NLB=""';
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                Image = Dimensions;
+                ShortcutKey = 'Shift+ctrl+d';
+                RunObject = page "Default Dimensions";
+                RunPageLink = "Table ID" = const(50102), "No." = field("No.");
             }
         }
     }

@@ -79,12 +79,6 @@ End Function
         <Field Name="MaximumParticipants">
           <DataField>MaximumParticipants</DataField>
         </Field>
-        <Field Name="Seminar_Duration">
-          <DataField>Seminar_Duration</DataField>
-        </Field>
-        <Field Name="Seminar_DurationFormat">
-          <DataField>Seminar_DurationFormat</DataField>
-        </Field>
         <Field Name="Name">
           <DataField>Name</DataField>
         </Field>

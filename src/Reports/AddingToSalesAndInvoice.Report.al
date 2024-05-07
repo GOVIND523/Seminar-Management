@@ -1,7 +1,7 @@
 report 50103 "Create Invoice"
 {
     ApplicationArea = All;
-    Caption = 'Create Invoice';
+    Caption = 'Invoice a Seminar Ledger Record';
     UsageCategory = ReportsAndAnalysis;
     ProcessingOnly = true;
     dataset
@@ -9,8 +9,6 @@ report 50103 "Create Invoice"
         dataitem(SeminarLedgerEntry; SeminarLedgerEntry)
         {
             RequestFilterFields = "Bill-to Customer No.", "Posting Date", "Seminar No.";
-            //DataItemTableView = sorting(Bill)
-
 
             column(BilltoCustomerNo; "Bill-to Customer No.")
             {
@@ -41,7 +39,6 @@ report 50103 "Create Invoice"
                             if SaleHeader."No." <> '' then
                                 FinalizeSalesInvHeader();
                             InsertSalesInvHeader();
-
                         end;
                         Window.Update(2, "Seminar Registration No.");
                         case Type of
@@ -74,15 +71,7 @@ report 50103 "Create Invoice"
 
                 if (SaleHeader."Currency Code" <> '') then begin
                     SaleHeader.TESTFIELD("Currency Factor");
-                    SalesLine."Unit Price" :=
-                        ROUND(
-                            CurrencyExch.ExchangeAmtLCYToFCY(
-                                WORKDATE,
-                                SaleHeader."Currency Code",
-                                SalesLine."Unit Price",
-                                SaleHeader."Currency Factor"
-                            )
-                        );
+                    SalesLine."Unit Price" := ROUND(CurrencyExch.ExchangeAmtLCYToFCY(WORKDATE, SaleHeader."Currency Code", SalesLine."Unit Price", SaleHeader."Currency Factor"));
                 end;
 
                 SalesLine.VALIDATE(Quantity, Quantity);
@@ -106,15 +95,9 @@ report 50103 "Create Invoice"
                 end;
 
                 if NoOfSalesInvErr = 0 then
-                    Message(
-                        Text005,
-                        NoOfSalesInv
-                    )
+                    Message(Text005, NoOfSalesInv)
                 else
-                    Message(
-                        Text006,
-                        NoOfSalesInvErr
-                    );
+                    Message(Text006, NoOfSalesInvErr);
             end;
 
 
@@ -126,11 +109,7 @@ report 50103 "Create Invoice"
                     Error(Text000);
                 if DocDateReq = 0D then
                     Error(Text001);
-                Window.Open(
-                    Text002 +
-                    Text003 +
-                    Text004
-                );
+                Window.Open(Text002 + Text003 + Text004);
             end;
         }
     }
@@ -256,23 +235,21 @@ report 50103 "Create Invoice"
     local procedure FinalizeSalesInvHeader()
     var
         myInt: Integer;
+        SalesHeader: record "Sales Header";
     begin
         if SaleHeader.Find then begin
             if CalcInvoiceDis then
                 SalesDis.Run(SalesLine);
-            //Get("Document Type", "No.");
+            SalesHeader.Get(SaleHeader."Document Type", SaleHeader."No.");
             Commit();
             Clear(SalesDis);
             Clear(SalePost);
             NoOfSalesInv := NoOfSalesInv + 1;
             if PostInvoices then
                 Clear(SalePost);
-            if not SalePost.Run(SaleHeader) then
+            if not SalePost.Run(SalesHeader) then
                 NoOfSalesInvErr := NoOfSalesInvErr + 1;
         end;
 
     end;
-
-
-
 }

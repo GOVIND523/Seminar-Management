@@ -119,7 +119,7 @@ table 50110 SeminarJournalLine
             DataClassification = CustomerContent;
             TableRelation = Resource where(Type = const(Person));
         }
-        field(21; "Starting Date"; DateTime)
+        field(21; "Starting Date"; Date)
         {
             Caption = 'Starting Date';
             DataClassification = CustomerContent;
@@ -182,6 +182,21 @@ table 50110 SeminarJournalLine
             Caption = 'Posting No. Series';
             DataClassification = CustomerContent;
             TableRelation = "No. Series";
+        }
+        field(47; "Shortcut Dimension 1 Code"; Code[20])
+        {
+            Caption = 'Shortcut Dimension 1 Code';
+            TableRelation = "Dimension Value".Code where("Global Dimension No." = const(1));
+        }
+        field(48; "Shortcut Dimension 2 Code"; Code[20])
+        {
+            Caption = 'Shortcut Dimension 2 Code';
+            TableRelation = "Dimension Value".Code where("Global Dimension No." = const(2));
+        }
+
+        field(480; "Dimension Set ID"; Integer)
+        {
+            Caption = 'Dimension Set ID';
         }
     }
     keys

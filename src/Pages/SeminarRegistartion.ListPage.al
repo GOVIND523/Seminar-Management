@@ -115,9 +115,23 @@ page 50108 SeminarRegistrationList
                     Caption = 'P&ost';
                     ApplicationArea = All;
                     Image = PostDocument;
-                    Promoted = true;
                     RunObject = codeunit SeminarPostYesNo;
                 }
+            }
+
+            action("Dimensions")
+            {
+                ApplicationArea = All;
+                Caption = 'Dimensions', comment = 'NLB="YourLanguageCaption"';
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                Image = Dimensions;
+                ShortcutKey = 'Shift+ctrl+d';
+                trigger OnAction()
+                begin
+                    Rec.showDocDim;
+                end;
             }
         }
     }
